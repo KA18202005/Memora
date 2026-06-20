@@ -10,9 +10,3 @@ def generate_embedding(text):
         text
     ).tolist()
     
-
-vector = generate_embedding(
-    "FastAPI is a Python framework"
-)
-
-print(len(vector))

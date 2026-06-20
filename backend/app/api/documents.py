@@ -1,19 +1,114 @@
-from fastapi import APIRouter, UploadFile, File
-from app.services.pdf_service import extract_text_from_pdf
-from app.database.mongodb import db
+from fastapi import APIRouter, UploadFile, File, HTTPException
 from bson import ObjectId
-from fastapi import HTTPException
 from datetime import datetime
+import os
+
+from app.database.mongodb import db
+
+from app.services.pdf_service import extract_text_from_pdf
 from app.services.chunking_service import chunk_text
 from app.services.vector_service import store_chunk
 from app.services.search_service import search_chunks
+from app.services.rag_service import ask_memora
+from app.services.topic_service import extract_topics
 
-import os
+from app.schemas.question_schema import QuestionRequest
 
 router = APIRouter()
 
 UPLOAD_DIR = "uploads"
 
+
+# ==========================
+# Upload Document
+# ==========================
+
+@router.post("/upload")
+async def upload_document(
+    file: UploadFile = File(...)
+):
+
+    file_path = os.path.join(
+        UPLOAD_DIR,
+        file.filename
+    )
+
+    with open(file_path, "wb") as buffer:
+        buffer.write(
+            await file.read()
+        )
+
+    # Extract PDF Text
+    extracted_text = extract_text_from_pdf(
+        file_path
+    )
+
+    # Save Document
+    document = {
+        "title": file.filename,
+        "filename": file.filename,
+        "source_type": "pdf",
+        "content": extracted_text,
+        "text_length": len(extracted_text),
+        "uploaded_at": datetime.utcnow()
+    }
+
+    result = db.documents.insert_one(
+        document
+    )
+
+    document_id = str(
+        result.inserted_id
+    )
+
+    # Generate Chunks
+    chunks = chunk_text(
+        extracted_text
+    )
+
+    # Save Chunks + Embeddings
+    for idx, chunk in enumerate(chunks):
+
+        chunk_result = db.chunks.insert_one({
+            "document_id": document_id,
+            "chunk_index": idx,
+            "content": chunk
+        })
+
+        store_chunk(
+            chunk_id=str(
+                chunk_result.inserted_id
+            ),
+            content=chunk,
+            document_id=document_id
+        )
+
+    # Extract Topics
+    topics = extract_topics(
+        extracted_text
+    )
+
+    # Save Topics
+    for topic in topics:
+
+        db.topics.insert_one({
+            "document_id": document_id,
+            "topic": topic
+        })
+
+    return {
+        "document_id": document_id,
+        "filename": file.filename,
+        "characters": len(extracted_text),
+        "total_chunks": len(chunks),
+        "topics_found": len(topics),
+        "topics": topics
+    }
+
+
+# ==========================
+# List Documents
+# ==========================
 
 @router.get("/")
 def get_documents():
@@ -32,88 +127,10 @@ def get_documents():
     return documents
 
 
-@router.get("/{document_id}")
-def get_document(document_id: str):
+# ==========================
+# Get Chunks
+# ==========================
 
-    document = db.documents.find_one(
-        {"_id": ObjectId(document_id)}
-    )
-
-    if not document:
-        raise HTTPException(
-            status_code=404,
-            detail="Document not found"
-        )
-
-    return {
-        "id": str(document["_id"]),
-        "title": document["title"],
-        "content": document["content"][:1000]
-    }
-
-@router.post("/upload")
-async def upload_document(
-    file: UploadFile = File(...)
-):
-
-    file_path = os.path.join(
-        "uploads",
-        file.filename
-    )
-
-    with open(file_path, "wb") as buffer:
-        buffer.write(
-            await file.read()
-        )
-
-    extracted_text = extract_text_from_pdf(
-        file_path
-    )
-
-    document = {
-        "title": file.filename,
-        "filename": file.filename,
-        "source_type": "pdf",
-        "content": extracted_text,
-        "text_length": len(extracted_text),
-        "uploaded_at": datetime.utcnow()
-    }
-
-    result = db.documents.insert_one(
-        document
-    )
-
-    document_id = str(
-        result.inserted_id
-    )
-
-    chunks = chunk_text(
-        extracted_text
-    )
-
-    for idx, chunk in enumerate(chunks):
-
-        chunk_result = db.chunks.insert_one({
-            "document_id": document_id,
-            "chunk_index": idx,
-            "content": chunk
-        })
-
-        store_chunk(
-            chunk_id=str(
-                chunk_result.inserted_id
-            ),
-            content=chunk,
-            document_id=document_id
-        )
-
-    return {
-        "document_id": document_id,
-        "filename": file.filename,
-        "total_chunks": len(chunks),
-        "characters": len(extracted_text)
-    }
-    
 @router.get("/chunks/{document_id}")
 def get_chunks(document_id: str):
 
@@ -131,6 +148,33 @@ def get_chunks(document_id: str):
     return chunks
 
 
+# ==========================
+# Get Topics
+# ==========================
+
+@router.get("/topics/{document_id}")
+def get_topics(document_id: str):
+
+    topics = []
+
+    for topic in db.topics.find(
+        {"document_id": document_id}
+    ):
+
+        topics.append(
+            topic["topic"]
+        )
+
+    return {
+        "document_id": document_id,
+        "topics": topics
+    }
+
+
+# ==========================
+# Semantic Search
+# ==========================
+
 @router.post("/search")
 def search_documents(
     query: str
@@ -141,3 +185,43 @@ def search_documents(
     )
 
     return results
+
+
+# ==========================
+# Ask Memora (RAG)
+# ==========================
+
+@router.post("/ask")
+def ask_question(
+    request: QuestionRequest
+):
+
+    return ask_memora(
+        request.question
+    )
+
+
+# ==========================
+# Get Single Document
+# KEEP THIS LAST
+# ==========================
+
+@router.get("/{document_id}")
+def get_document(document_id: str):
+
+    document = db.documents.find_one(
+        {"_id": ObjectId(document_id)}
+    )
+
+    if not document:
+
+        raise HTTPException(
+            status_code=404,
+            detail="Document not found"
+        )
+
+    return {
+        "id": str(document["_id"]),
+        "title": document["title"],
+        "content": document["content"][:1000]
+    }
