@@ -1,7 +1,13 @@
 from fastapi import APIRouter
 from app.schemas.user_schema import UserCreate
 from app.database.mongodb import db
+from fastapi import HTTPException
 from app.core.security import hash_password
+from app.schemas.user_schema import UserLogin
+from app.core.security import (
+    verify_password,
+    create_access_token
+)
 
 router = APIRouter()
 
@@ -13,9 +19,11 @@ def signup(user: UserCreate):
     )
 
     if existing_user:
-        return {
-            "message": "User already exists"
-        }
+
+        raise HTTPException(
+            status_code=400,
+            detail="User already exists"
+        )
 
     db.users.insert_one({
         "name": user.name,
@@ -27,4 +35,39 @@ def signup(user: UserCreate):
 
     return {
         "message": "User created successfully"
+    }
+
+@router.post("/login")
+def login(user: UserLogin):
+
+    existing_user = db.users.find_one(
+        {"email": user.email}
+    )
+
+    if not existing_user:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid credentials"
+        )
+
+    if not verify_password(
+        user.password,
+        existing_user["password"]
+    ):
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid credentials"
+        )
+
+    token = create_access_token(
+        {
+            "user_id": str(
+                existing_user["_id"]
+            )
+        }
+    )
+
+    return {
+        "access_token": token,
+        "token_type": "bearer"
     }
