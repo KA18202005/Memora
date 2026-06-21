@@ -11,7 +11,7 @@ from app.services.vector_service import store_chunk
 from app.services.search_service import search_chunks
 from app.services.rag_service import ask_memora
 from app.services.topic_service import extract_topics
-
+from app.services.graph_service import generate_relationships
 from app.schemas.question_schema import QuestionRequest
 
 router = APIRouter()
@@ -87,6 +87,10 @@ async def upload_document(
     topics = extract_topics(
         extracted_text
     )
+    relationships = generate_relationships(
+        extracted_text,
+        topics
+    )
 
     # Save Topics
     for topic in topics:
@@ -95,6 +99,14 @@ async def upload_document(
             "document_id": document_id,
             "topic": topic
         })
+        
+    for edge in relationships:
+        
+        db.graph_edges.insert_one({
+            "document_id": document_id,
+            "source": edge["source"],
+            "target": edge["target"]
+        })
 
     return {
         "document_id": document_id,
@@ -102,6 +114,7 @@ async def upload_document(
         "characters": len(extracted_text),
         "total_chunks": len(chunks),
         "topics_found": len(topics),
+        "relationships_found": len(relationships),
         "topics": topics
     }
 
@@ -224,4 +237,36 @@ def get_document(document_id: str):
         "id": str(document["_id"]),
         "title": document["title"],
         "content": document["content"][:1000]
+    }
+    
+@router.get("/graph/{document_id}")
+def get_graph(document_id: str):
+
+    nodes = set()
+
+    edges = []
+
+    graph_edges = db.graph_edges.find(
+        {"document_id": document_id}
+    )
+
+    for edge in graph_edges:
+
+        source = edge["source"]
+        target = edge["target"]
+
+        nodes.add(source)
+        nodes.add(target)
+
+        edges.append({
+            "source": source,
+            "target": target
+        })
+
+    return {
+        "nodes": [
+            {"id": node}
+            for node in nodes
+        ],
+        "edges": edges
     }
