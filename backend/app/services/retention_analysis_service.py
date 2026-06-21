@@ -6,6 +6,9 @@ from app.services.retention_service import (
     calculate_retention_score
 )
 
+from app.services.ml_retention_service import (
+    predict_retention
+)
 
 def get_retention_analysis(topic):
 
@@ -29,7 +32,7 @@ def get_retention_analysis(topic):
         - analytics["last_revision"]
     ).days
 
-    retention_score = calculate_retention_score(
+    retention_score = predict_retention(
         analytics["revision_count"],
         analytics["average_score"],
         days_since_learning,
