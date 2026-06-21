@@ -10,6 +10,8 @@ from app.services.topic_analytics_service import update_topic_analytics
 from app.services.retention_dataset_service import build_retention_dataset
 from app.services.retention_analysis_service import get_retention_analysis
 from app.services.export_service import export_dataset
+from app.services.recommendation_service import get_revision_recommendation
+from app.services.recommendation_engine import generate_smart_recommendation
 
 router = APIRouter()
 
@@ -51,8 +53,11 @@ def evaluate_revision_answer(
         "question": request.question,
         "answer": request.answer,
         "score": result["score"],
+        "strengths": result["strengths"],
+        "weaknesses": result["weaknesses"],
         "created_at": datetime.utcnow()
     })
+    
     update_topic_analytics(
         request.topic,
         result["score"]
@@ -114,3 +119,22 @@ def export_retention_dataset():
         "path":
             path
     }
+
+@router.get("/recommendation/{topic}")
+def recommendation(
+    topic: str
+):
+
+    return get_revision_recommendation(
+        topic
+    )
+    
+@router.get("/smart-recommendation/{topic}")
+def smart_recommendation(
+    topic: str
+):
+
+    return generate_smart_recommendation(
+        topic
+    )
+    
