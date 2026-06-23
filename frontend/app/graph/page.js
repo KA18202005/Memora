@@ -96,12 +96,12 @@ export default function GraphPage() {
     return (
         <div
             className="
-    w-full
-    h-[85vh]
-    bg-white
-    rounded-xl
-    shadow-lg
-  "
+                w-full
+                h-[85vh]
+                bg-white
+                rounded-xl
+                shadow-lg
+            "
         >
             <ReactFlow
                 nodes={nodes}
