@@ -14,8 +14,9 @@ from app.services.topic_service import extract_topics
 from app.services.graph_service import generate_relationships
 from app.schemas.question_schema import QuestionRequest
 
-router = APIRouter()
+print("DOCUMENTS ROUTER LOADED")
 
+router = APIRouter()
 UPLOAD_DIR = "uploads"
 
 
@@ -213,12 +214,48 @@ def ask_question(
         request.question
     )
 
+# ==========================
+# Knowledge Graph (ALL)
+# ==========================
+
+@router.get("/graph/all")
+def get_all_graph():
+
+    nodes = set()
+    edges = []
+
+    graph_edges = db.graph_edges.find()
+
+    for edge in graph_edges:
+
+        source = edge["source"]
+        target = edge["target"]
+
+        nodes.add(source)
+        nodes.add(target)
+
+        edges.append({
+            "source": source,
+            "target": target
+        })
+
+    return {
+        "nodes": [
+            {"id": node}
+            for node in nodes
+        ],
+        "edges": edges
+    }
+
+
+# ==========================
+# Knowledge Graph (Single Document)
+# ==========================
 
 @router.get("/graph/{document_id}")
 def get_graph(document_id: str):
 
     nodes = set()
-
     edges = []
 
     graph_edges = db.graph_edges.find(
@@ -245,37 +282,8 @@ def get_graph(document_id: str):
         ],
         "edges": edges
     }
-    
-@router.get("/graph/all")
-def get_all_graph():
 
-    nodes = set()
 
-    edges = []
-
-    graph_edges = db.graph_edges.find()
-
-    for edge in graph_edges:
-
-        source = edge["source"]
-        target = edge["target"]
-
-        nodes.add(source)
-        nodes.add(target)
-
-        edges.append({
-            "source": source,
-            "target": target
-        })
-
-    return {
-        "nodes": [
-            {"id": node}
-            for node in nodes
-        ],
-        "edges": edges
-    }
-    
 # ==========================
 # Get Single Document
 # KEEP THIS LAST
@@ -300,4 +308,3 @@ def get_document(document_id: str):
         "title": document["title"],
         "content": document["content"][:1000]
     }
-    

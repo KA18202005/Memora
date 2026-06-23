@@ -39,13 +39,7 @@ export default function GraphPage() {
 
     const loadGraph = async () => {
 
-        const documentId =
-            "6a37949c8f64df5049aeeeb9";
-
-        const data =
-            await getGraph(
-                documentId
-            );
+        const data = await getGraph();
 
         console.log(data);
 
