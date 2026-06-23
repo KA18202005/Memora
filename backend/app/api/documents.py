@@ -270,3 +270,33 @@ def get_graph(document_id: str):
         ],
         "edges": edges
     }
+    
+@router.get("/graph/all")
+def get_all_graph():
+
+    nodes = set()
+
+    edges = []
+
+    graph_edges = db.graph_edges.find()
+
+    for edge in graph_edges:
+
+        source = edge["source"]
+        target = edge["target"]
+
+        nodes.add(source)
+        nodes.add(target)
+
+        edges.append({
+            "source": source,
+            "target": target
+        })
+
+    return {
+        "nodes": [
+            {"id": node}
+            for node in nodes
+        ],
+        "edges": edges
+    }
