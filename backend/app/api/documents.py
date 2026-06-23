@@ -214,31 +214,6 @@ def ask_question(
     )
 
 
-# ==========================
-# Get Single Document
-# KEEP THIS LAST
-# ==========================
-
-@router.get("/{document_id}")
-def get_document(document_id: str):
-
-    document = db.documents.find_one(
-        {"_id": ObjectId(document_id)}
-    )
-
-    if not document:
-
-        raise HTTPException(
-            status_code=404,
-            detail="Document not found"
-        )
-
-    return {
-        "id": str(document["_id"]),
-        "title": document["title"],
-        "content": document["content"][:1000]
-    }
-    
 @router.get("/graph/{document_id}")
 def get_graph(document_id: str):
 
@@ -300,3 +275,29 @@ def get_all_graph():
         ],
         "edges": edges
     }
+    
+# ==========================
+# Get Single Document
+# KEEP THIS LAST
+# ==========================
+
+@router.get("/{document_id}")
+def get_document(document_id: str):
+
+    document = db.documents.find_one(
+        {"_id": ObjectId(document_id)}
+    )
+
+    if not document:
+
+        raise HTTPException(
+            status_code=404,
+            detail="Document not found"
+        )
+
+    return {
+        "id": str(document["_id"]),
+        "title": document["title"],
+        "content": document["content"][:1000]
+    }
+    
