@@ -14,8 +14,6 @@ from app.services.topic_service import extract_topics
 from app.services.graph_service import generate_relationships
 from app.schemas.question_schema import QuestionRequest
 
-print("DOCUMENTS ROUTER LOADED")
-
 router = APIRouter()
 UPLOAD_DIR = "uploads"
 
