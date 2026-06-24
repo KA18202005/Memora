@@ -8,9 +8,12 @@ from app.services.dashboard_service import (
     get_dashboard_stats
 )
 
-stats = get_dashboard_stats()
 
 def get_dashboard_full():
+
+    # FIX:
+    # Calculate stats every request
+    stats = get_dashboard_stats()
 
     weak_topics = []
 
@@ -47,9 +50,12 @@ def get_dashboard_full():
                         "retention_score"
                     ]
             })
+
     weak_topics.sort(
-        key=lambda x: x["retention_score"]
+        key=lambda x:
+        x["retention_score"]
     )
+
     priority_order = {
         "CRITICAL": 4,
         "HIGH": 3,
@@ -58,7 +64,8 @@ def get_dashboard_full():
     }
 
     recommendations.sort(
-        key=lambda x: priority_order.get(
+        key=lambda x:
+        priority_order.get(
             x["priority"],
             0
         ),

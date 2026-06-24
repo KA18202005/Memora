@@ -138,3 +138,23 @@ def smart_recommendation(
         topic
     )
     
+@router.get("/topic/{topic}")
+def get_topic_details(
+    topic: str
+):
+
+    recommendation = get_revision_recommendation(
+            topic
+        )
+
+    analytics = db.topic_analytics.find_one({
+            "topic": topic
+        })
+
+    return {
+        "topic": topic,
+        "recommendation":
+            recommendation,
+        "analytics":
+            analytics
+    }
