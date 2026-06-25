@@ -1,13 +1,11 @@
-import axios from "axios";
-
-const API =
-  process.env.NEXT_PUBLIC_API_URL;
+import api from "./api";
 
 export const getDashboard = async () => {
-  const response =
-    await axios.get(
-      `${API}/dashboard/full`
-    );
 
-  return response.data;
+    const response =
+        await api.get(
+            "/dashboard/full"
+        );
+
+    return response.data;
 };

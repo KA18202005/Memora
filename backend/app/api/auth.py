@@ -40,9 +40,14 @@ def signup(user: UserCreate):
 @router.post("/login")
 def login(user: UserLogin):
 
+    print("=" * 50)
+    print("EMAIL:", user.email)
+
     existing_user = db.users.find_one(
         {"email": user.email}
     )
+
+    print("USER FOUND:", existing_user)
 
     if not existing_user:
         raise HTTPException(
@@ -50,10 +55,14 @@ def login(user: UserLogin):
             detail="Invalid credentials"
         )
 
-    if not verify_password(
+    password_ok = verify_password(
         user.password,
         existing_user["password"]
-    ):
+    )
+
+    print("PASSWORD OK:", password_ok)
+
+    if not password_ok:
         raise HTTPException(
             status_code=401,
             detail="Invalid credentials"
@@ -61,11 +70,12 @@ def login(user: UserLogin):
 
     token = create_access_token(
         {
-            "user_id": str(
-                existing_user["_id"]
-            )
+            "user_id": str(existing_user["_id"])
         }
     )
+
+    print("LOGIN SUCCESS")
+    print("=" * 50)
 
     return {
         "access_token": token,

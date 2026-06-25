@@ -2,6 +2,8 @@ from fastapi import APIRouter, UploadFile, File, HTTPException
 from bson import ObjectId
 from datetime import datetime
 import os
+from fastapi import Depends
+from app.dependencies import get_current_user
 
 from app.database.mongodb import db
 
@@ -24,9 +26,14 @@ UPLOAD_DIR = "uploads"
 
 @router.post("/upload")
 async def upload_document(
-    file: UploadFile = File(...)
-):
 
+    file: UploadFile = File(...),
+
+    user_id: str = Depends(
+        get_current_user
+    )
+
+):
     file_path = os.path.join(
         UPLOAD_DIR,
         file.filename
@@ -44,12 +51,24 @@ async def upload_document(
 
     # Save Document
     document = {
+
+        "user_id": user_id,
+
         "title": file.filename,
+
         "filename": file.filename,
+
         "source_type": "pdf",
+
         "content": extracted_text,
-        "text_length": len(extracted_text),
-        "uploaded_at": datetime.utcnow()
+
+        "text_length": len(
+            extracted_text
+        ),
+
+        "uploaded_at":
+            datetime.utcnow()
+
     }
 
     result = db.documents.insert_one(
@@ -122,23 +141,39 @@ async def upload_document(
 # List Documents
 # ==========================
 
+
+
 @router.get("/")
-def get_documents():
+def get_documents(
+    user_id: str = Depends(get_current_user)
+):
 
-    documents = []
+    print("=" * 50)
+    print("CURRENT USER:", user_id)
 
-    for doc in db.documents.find():
+    docs = list(
+        db.documents.find(
+            {
+                "user_id": user_id
+            }
+        )
+    )
 
-        documents.append({
+    print("FOUND DOCS:", len(docs))
+
+    for doc in docs:
+        print(doc["title"], doc["user_id"])
+
+    return [
+        {
             "id": str(doc["_id"]),
             "title": doc["title"],
             "source_type": doc["source_type"],
             "text_length": doc["text_length"]
-        })
-
-    return documents
-
-
+        }
+        for doc in docs
+    ]
+    
 # ==========================
 # Get Chunks
 # ==========================
