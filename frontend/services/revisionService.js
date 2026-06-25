@@ -1,15 +1,10 @@
-import axios from "axios";
+import api from "./api";
 
-const API =
-  process.env.NEXT_PUBLIC_API_URL;
+export const getRevision = async (topic) => {
 
-export const getRevision =
-  async (topic) => {
-
-    const response =
-      await axios.get(
-        `${API}/revision/recommendation/${topic}`
-      );
+    const response = await api.get(
+        `/revision/recommendation/${topic}`
+    );
 
     return response.data;
-  };
+};

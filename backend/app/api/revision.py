@@ -12,6 +12,9 @@ from app.services.retention_analysis_service import get_retention_analysis
 from app.services.export_service import export_dataset
 from app.services.recommendation_service import get_revision_recommendation
 from app.services.recommendation_engine import generate_smart_recommendation
+from fastapi import Depends
+
+from app.dependencies import get_current_user
 
 router = APIRouter()
 
@@ -40,28 +43,53 @@ def generate_revision(
 
 @router.post("/evaluate")
 def evaluate_revision_answer(
-    request: EvaluationRequest
+
+    request: EvaluationRequest,
+
+    user_id: str = Depends(
+        get_current_user
+    )
+
 ):
 
     result = evaluate_answer(
+
         request.question,
+
         request.answer
+
     )
 
     db.quiz_attempts.insert_one({
+
+        "user_id": user_id,
+
         "topic": request.topic,
+
         "question": request.question,
+
         "answer": request.answer,
+
         "score": result["score"],
+
         "strengths": result["strengths"],
+
         "weaknesses": result["weaknesses"],
+
         "created_at": datetime.utcnow()
+
     })
-    
+
     update_topic_analytics(
+
+        user_id,
+
         request.topic,
+
         result["score"]
+
     )
+
     return result
 
 @router.get("/report/{topic}")
@@ -73,19 +101,29 @@ def topic_report(topic: str):
     
 @router.get("/analytics/{topic}")
 def get_analytics(
-    topic: str
+
+    topic: str,
+
+    user_id: str = Depends(
+        get_current_user
+    )
+
 ):
 
-    analytics = db.topic_analytics.find_one(
-        {
-            "topic": topic
-        }
-    )
+    analytics = db.topic_analytics.find_one({
+
+        "user_id": user_id,
+
+        "topic": topic
+
+    })
 
     if not analytics:
 
         return {
-            "message":"No analytics found"
+
+            "message": "No analytics found"
+
         }
 
     analytics["_id"] = str(
@@ -101,11 +139,21 @@ def retention_dataset():
 
 @router.get("/retention/{topic}")
 def retention_report(
-    topic: str
+
+    topic: str,
+
+    user_id: str = Depends(
+        get_current_user
+    )
+
 ):
 
     return get_retention_analysis(
+
+        user_id,
+
         topic
+
     )
     
 @router.get("/export-dataset")
@@ -122,11 +170,21 @@ def export_retention_dataset():
 
 @router.get("/recommendation/{topic}")
 def recommendation(
-    topic: str
+
+    topic: str,
+
+    user_id: str = Depends(
+        get_current_user
+    )
+
 ):
 
     return get_revision_recommendation(
+
+        user_id,
+
         topic
+
     )
     
 @router.get("/smart-recommendation/{topic}")
@@ -140,21 +198,43 @@ def smart_recommendation(
     
 @router.get("/topic/{topic}")
 def get_topic_details(
-    topic: str
+
+    topic: str,
+
+    user_id: str = Depends(
+        get_current_user
+    )
+
 ):
 
     recommendation = get_revision_recommendation(
-            topic
-        )
+
+        user_id,
+
+        topic
+
+    )
 
     analytics = db.topic_analytics.find_one({
-            "topic": topic
-        })
+
+        "user_id": user_id,
+
+        "topic": topic
+
+    })
+
+    if analytics:
+
+        analytics["_id"] = str(
+            analytics["_id"]
+        )
 
     return {
+
         "topic": topic,
-        "recommendation":
-            recommendation,
-        "analytics":
-            analytics
+
+        "recommendation": recommendation,
+
+        "analytics": analytics
+
     }

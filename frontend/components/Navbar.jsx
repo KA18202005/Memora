@@ -24,7 +24,7 @@ export default function Navbar() {
           Graph
         </Link>
 
-        <Link href="/revisions">
+        <Link href="/revision">
           Revisions
         </Link>
       </div>

@@ -4,36 +4,33 @@ from app.database.mongodb import db
 
 
 def update_topic_analytics(
-    topic,
-    score
+    user_id: str,
+    topic: str,
+    score: float
 ):
 
-    analytics = db.topic_analytics.find_one(
-        {
-            "topic": topic
-        }
-    )
+    analytics = db.topic_analytics.find_one({
+        "user_id": user_id,
+        "topic": topic
+    })
 
     if analytics:
 
-        revision_count = (
-            analytics["revision_count"] + 1
-        )
+        revision_count = analytics["revision_count"] + 1
 
         total_score = (
             analytics["average_score"]
-            *
-            analytics["revision_count"]
+            * analytics["revision_count"]
         ) + score
 
         average_score = (
-            total_score
-            /
+            total_score /
             revision_count
         )
 
         db.topic_analytics.update_one(
             {
+                "user_id": user_id,
                 "topic": topic
             },
             {
@@ -48,9 +45,17 @@ def update_topic_analytics(
     else:
 
         db.topic_analytics.insert_one({
+
+            "user_id": user_id,
+
             "topic": topic,
+
             "revision_count": 1,
+
             "average_score": score,
+
             "created_at": datetime.utcnow(),
+
             "last_revision": datetime.utcnow()
+
         })

@@ -1,34 +1,18 @@
-from fastapi import Header, HTTPException
+from fastapi import Depends, HTTPException
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
-from app.core.security import (
-    decode_access_token
-)
+from app.core.security import decode_access_token
+
+security = HTTPBearer()
 
 
 def get_current_user(
-
-    authorization: str = Header(None)
-
+    credentials: HTTPAuthorizationCredentials = Depends(
+        security
+    )
 ):
 
-    if authorization is None:
-
-        raise HTTPException(
-            status_code=401,
-            detail="Authorization header missing"
-        )
-
-    if not authorization.startswith("Bearer "):
-
-        raise HTTPException(
-            status_code=401,
-            detail="Invalid token"
-        )
-
-    token = authorization.replace(
-        "Bearer ",
-        ""
-    )
+    token = credentials.credentials
 
     payload = decode_access_token(
         token
@@ -38,7 +22,7 @@ def get_current_user(
 
         raise HTTPException(
             status_code=401,
-            detail="Invalid token"
+            detail="Invalid Token"
         )
 
     return payload["user_id"]

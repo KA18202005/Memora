@@ -1,14 +1,33 @@
 from app.database.mongodb import db
 
 
-def get_dashboard_stats():
+def get_dashboard_stats(
+    user_id: str
+):
 
-    total_documents = db.documents.count_documents({})
+    total_documents = db.documents.count_documents({
+        "user_id": user_id
+    })
 
-    total_topics = db.topics.count_documents({})
+    total_topics = db.topics.count_documents({
+        "document_id": {
+            "$in": [
+                str(doc["_id"])
+                for doc in db.documents.find(
+                    {
+                        "user_id": user_id
+                    }
+                )
+            ]
+        }
+    })
 
     analytics = list(
-        db.topic_analytics.find()
+        db.topic_analytics.find(
+            {
+                "user_id": user_id
+            }
+        )
     )
 
     if not analytics:
@@ -26,9 +45,9 @@ def get_dashboard_stats():
 
     retention_scores = []
 
-    for topic in analytics:
+    for item in analytics:
 
-        score = topic.get(
+        score = item.get(
             "average_score",
             0
         ) * 10
@@ -38,8 +57,11 @@ def get_dashboard_stats():
         )
 
         if score >= 70:
+
             strong_topics += 1
+
         else:
+
             weak_topics += 1
 
     average_retention = round(
@@ -50,9 +72,15 @@ def get_dashboard_stats():
     )
 
     return {
+
         "documents": total_documents,
+
         "topics": total_topics,
+
         "strong_topics": strong_topics,
+
         "weak_topics": weak_topics,
+
         "average_retention": average_retention
+
     }

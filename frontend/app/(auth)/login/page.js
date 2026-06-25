@@ -1,17 +1,47 @@
 "use client";
 
-import { useState } from "react";
-import { login } from "@/services/authService";
-import { useRouter } from "next/navigation";
+import {
+
+    useState
+
+} from "react";
+
+import {
+
+    useRouter
+
+} from "next/navigation";
+
+import {
+
+    login as loginUser
+
+} from "@/services/authService";
+
+import {
+
+    useAuth
+
+} from "@/context/AuthContext";
 
 export default function LoginPage() {
 
-    const router = useRouter();
+    const router =
+        useRouter();
+
+    const {
+
+        login
+
+    } = useAuth();
 
     const [form, setForm] =
         useState({
+
             email: "",
+
             password: ""
+
         });
 
     const handleSubmit =
@@ -22,12 +52,11 @@ export default function LoginPage() {
             try {
 
                 const data =
-                    await login(form);
+                    await loginUser(
+                        form
+                    );
 
-                console.log(data);
-
-                localStorage.setItem(
-                    "token",
+                login(
                     data.access_token
                 );
 
@@ -35,7 +64,9 @@ export default function LoginPage() {
                     "/dashboard"
                 );
 
-            } catch (error) {
+            }
+
+            catch (error) {
 
                 console.error(
                     error
@@ -44,14 +75,19 @@ export default function LoginPage() {
                 alert(
                     "Login Failed"
                 );
+
             }
+
         };
 
     return (
+
         <div className="max-w-md mx-auto mt-10">
 
             <h1 className="text-3xl font-bold mb-6">
+
                 Login
+
             </h1>
 
             <form
@@ -66,8 +102,12 @@ export default function LoginPage() {
                     value={form.email}
                     onChange={(e) =>
                         setForm({
+
                             ...form,
-                            email: e.target.value
+
+                            email:
+                                e.target.value
+
                         })
                     }
                 />
@@ -79,26 +119,34 @@ export default function LoginPage() {
                     value={form.password}
                     onChange={(e) =>
                         setForm({
+
                             ...form,
-                            password: e.target.value
+
+                            password:
+                                e.target.value
+
                         })
                     }
                 />
 
                 <button
                     className="
-            bg-green-600
-            text-white
-            px-5
-            py-2
-            rounded
-          "
+                    bg-green-600
+                    text-white
+                    px-5
+                    py-2
+                    rounded
+                "
                 >
+
                     Login
+
                 </button>
 
             </form>
 
         </div>
+
     );
+
 }

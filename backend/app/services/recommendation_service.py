@@ -3,13 +3,18 @@ from app.services.retention_analysis_service import (
 )
 
 
-def get_revision_recommendation(topic):
+def get_revision_recommendation(
+    user_id: str,
+    topic: str
+):
 
     retention_data = get_retention_analysis(
+        user_id,
         topic
     )
 
     if "message" in retention_data:
+
         return retention_data
 
     retention_score = retention_data[
@@ -65,9 +70,19 @@ def get_revision_recommendation(topic):
         )
 
     return {
+
         "topic": topic,
-        "retention_score": retention_score,
-        "priority": priority,
-        "recommendation": recommendation,
-        "revision_type": revision_type
+
+        "retention_score":
+            retention_score,
+
+        "priority":
+            priority,
+
+        "recommendation":
+            recommendation,
+
+        "revision_type":
+            revision_type
+
     }

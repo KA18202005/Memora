@@ -1,36 +1,41 @@
 from app.database.mongodb import db
 
-from app.services.recommendation_service import (
-    get_revision_recommendation
-)
-
 from app.services.dashboard_service import (
     get_dashboard_stats
 )
 
+from app.services.recommendation_service import (
+    get_revision_recommendation
+)
 
-def get_dashboard_full():
 
-    # FIX:
-    # Calculate stats every request
-    stats = get_dashboard_stats()
+def get_dashboard_full(
+    user_id: str
+):
+
+    stats = get_dashboard_stats(
+        user_id
+    )
+
+    analytics = list(
+        db.topic_analytics.find(
+            {
+                "user_id": user_id
+            }
+        )
+    )
 
     weak_topics = []
 
     recommendations = []
 
-    analytics = list(
-        db.topic_analytics.find()
-    )
-
     for item in analytics:
 
         topic = item["topic"]
 
-        recommendation = (
-            get_revision_recommendation(
-                topic
-            )
+        recommendation = get_revision_recommendation(
+            user_id,
+            topic
         )
 
         recommendations.append(
@@ -38,42 +43,68 @@ def get_dashboard_full():
         )
 
         if (
-            recommendation[
-                "retention_score"
-            ] < 70
+            recommendation.get(
+                "retention_score",
+                100
+            ) < 70
         ):
 
             weak_topics.append({
+
                 "topic": topic,
+
                 "retention_score":
                     recommendation[
                         "retention_score"
                     ]
+
             })
 
-    weak_topics.sort(
-        key=lambda x:
-        x["retention_score"]
-    )
-
     priority_order = {
+
         "CRITICAL": 4,
+
         "HIGH": 3,
+
         "MEDIUM": 2,
+
         "LOW": 1
+
     }
 
     recommendations.sort(
+
         key=lambda x:
+
         priority_order.get(
-            x["priority"],
+
+            x.get(
+                "priority",
+                "LOW"
+            ),
+
             0
+
         ),
+
         reverse=True
+
+    )
+
+    weak_topics.sort(
+
+        key=lambda x:
+
+        x["retention_score"]
+
     )
 
     return {
+
         "stats": stats,
+
         "weak_topics": weak_topics,
+
         "recommendations": recommendations
+
     }
