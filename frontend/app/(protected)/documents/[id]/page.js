@@ -1,15 +1,19 @@
 "use client";
 
-import {
-    useEffect,
-    useState
-} from "react";
+import { useEffect, useState } from "react";
+
+import { useParams } from "next/navigation";
 
 import {
-    useParams
-} from "next/navigation";
+    DocumentHeader,
+    DocumentPreview,
+    TopicsSection,
+    QuickActions,
+    DocumentStats
+} from "@/components/document";
 
-import Link from "next/link";
+import { Skeleton } from "@/components/ui/skeleton";
+
 import {
     getDocument,
     getTopics
@@ -22,8 +26,13 @@ export default function DocumentPage() {
 
     const [document, setDocument] =
         useState(null);
+
     const [topics, setTopics] =
         useState([]);
+
+    const [loading, setLoading] =
+        useState(true);
+
     useEffect(() => {
 
         if (params?.id) {
@@ -39,7 +48,9 @@ export default function DocumentPage() {
 
             try {
 
-                const data =
+                setLoading(true);
+
+                const documentData =
                     await getDocument(
                         params.id
                     );
@@ -50,91 +61,100 @@ export default function DocumentPage() {
                     );
 
                 setDocument(
-                    data
+                    documentData
                 );
 
                 setTopics(
                     topicData.topics
                 );
 
-            } catch (error) {
-
-                console.error(
-                    error
-                );
             }
+
+            catch (error) {
+
+                console.error(error);
+
+            }
+
+            finally {
+
+                setLoading(false);
+
+            }
+
         };
+
+    if (loading) {
+
+        return (
+
+            <div className="space-y-6">
+
+                <Skeleton className="h-16 w-96 rounded-xl" />
+
+                <Skeleton className="h-80 rounded-2xl" />
+
+                <Skeleton className="h-32 rounded-2xl" />
+
+                <Skeleton className="h-48 rounded-2xl" />
+
+            </div>
+
+        );
+
+    }
 
     if (!document) {
 
         return (
-            <div>
-                Loading...
+
+            <div className="text-center py-20">
+
+                <h2 className="text-2xl font-bold">
+
+                    Document not found
+
+                </h2>
+
             </div>
+
         );
+
     }
 
     return (
-        <div>
 
-            <h1 className="text-4xl font-bold mb-8">
-                {document.title}
-            </h1>
+        <div
+            className="
+                max-w-7xl
+                mx-auto
+                space-y-8
+            "
+        >
 
-            <div
-                className="
-          bg-white
-          p-6
-          rounded-xl
-          shadow
-        "
-            >
+            <DocumentHeader
+                document={document}
+            />
 
-                <pre
-                    className="
-            whitespace-pre-wrap
-          "
-                >
-                    {document.content}
-                </pre>
-                <div className="mt-8">
+            <DocumentPreview
+                content={document.content}
+            />
 
-                    <h2 className="text-2xl font-bold mb-4">
-                        Topics
-                    </h2>
+            <TopicsSection
+                topics={topics}
+            />
 
-                    <div className="flex flex-wrap gap-2">
+            <QuickActions
+                documentId={document.id}
+            />
 
-                        {topics.map(
-                            (topic, index) => (
-
-                                <Link
-                                    key={index}
-                                    href={`/topics/${topic}`}
-                                >
-                                    <span
-                                        className="
-          bg-blue-100
-          text-blue-700
-          px-3
-          py-1
-          rounded-full
-          cursor-pointer
-        "
-                                    >
-                                        {topic}
-                                    </span>
-                                </Link>
-
-                            )
-                        )}
-
-                    </div>
-
-                </div>
-
-            </div>
+            <DocumentStats
+                document={document}
+                topics={topics}
+            />
 
         </div>
+
     );
+
 }

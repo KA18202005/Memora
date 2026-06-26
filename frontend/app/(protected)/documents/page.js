@@ -1,86 +1,156 @@
 "use client";
 
+import { useEffect, useMemo, useState } from "react";
+
 import {
-    useEffect,
-    useState
-} from "react";
-import Link from "next/link";
-import {
-    getDocuments
-} from "@/services/documentService";
+  DocumentsGrid,
+  SearchBar,
+  EmptyDocuments,
+} from "@/components/documents";
+
+import { Skeleton } from "@/components/ui/skeleton";
+
+import { getDocuments } from "@/services/documentService";
 
 export default function DocumentsPage() {
 
-    const [documents, setDocuments] =
-        useState([]);
+  const [documents, setDocuments] =
+    useState([]);
 
-    useEffect(() => {
+  const [loading, setLoading] =
+    useState(true);
 
-        loadDocuments();
+  const [search, setSearch] =
+    useState("");
 
-    }, []);
+  useEffect(() => {
 
-    const loadDocuments =
-        async () => {
+    loadDocuments();
 
-            const data =
-                await getDocuments();
+  }, []);
 
-            setDocuments(data);
-        };
+  const loadDocuments = async () => {
 
-    return (
-        <div>
+    try {
 
-            <h1
-                className="
-          text-4xl
-          font-bold
-          mb-8
-        "
-            >
-                Documents
-            </h1>
+      setLoading(true);
 
-            <div className="space-y-4">
+      const data =
+        await getDocuments();
 
-                {documents.map(
-                    (doc) => (
+      setDocuments(data);
 
-                        <Link
-                            href={`/documents/${doc.id}`}
-                            key={doc.id}
+    }
 
+    catch (error) {
 
-                        >
+      console.error(error);
 
-                            <h2
-                                className="
-                  text-xl
-                  font-semibold
-                "
-                            >
-                                {doc.title}
-                            </h2>
+    }
 
-                            <p>
-                                Type:
-                                {" "}
-                                {doc.source_type}
-                            </p>
+    finally {
 
-                            <p>
-                                Length:
-                                {" "}
-                                {doc.text_length}
-                            </p>
+      setLoading(false);
 
-                        </Link>
-                    )
-                )}
+    }
 
-            </div>
-            
+  };
+
+  const filteredDocuments =
+    useMemo(() => {
+
+      return documents.filter((doc) =>
+
+        doc.title
+          .toLowerCase()
+          .includes(
+            search.toLowerCase()
+          )
+
+      );
+
+    }, [documents, search]);
+
+  return (
+
+    <div className="space-y-8">
+
+      <div>
+
+        <h1 className="text-4xl font-bold">
+
+          Documents
+
+        </h1>
+
+        <p className="text-slate-500 mt-2">
+
+          Browse and manage your uploaded knowledge.
+
+        </p>
+
+      </div>
+
+      <SearchBar
+
+        search={search}
+
+        setSearch={setSearch}
+
+      />
+
+      {
+
+        loading ?
+
+        <div
+          className="
+            grid
+            grid-cols-1
+            md:grid-cols-2
+            xl:grid-cols-3
+            gap-6
+          "
+        >
+
+          {
+
+            [1,2,3,4,5,6].map((item)=>(
+
+              <Skeleton
+
+                key={item}
+
+                className="h-64 rounded-2xl"
+
+              />
+
+            ))
+
+          }
+
         </div>
-    );
+
+        :
+
+        filteredDocuments.length ?
+
+        <DocumentsGrid
+
+          documents={
+            filteredDocuments
+          }
+
+        />
+
+        :
+
+        <EmptyDocuments />
+
+      }
+
+    </div>
+
+  );
+
 }

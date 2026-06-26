@@ -169,7 +169,8 @@ def get_documents(
             "id": str(doc["_id"]),
             "title": doc["title"],
             "source_type": doc["source_type"],
-            "text_length": doc["text_length"]
+            "text_length": doc["text_length"],
+            "uploaded_at": doc.get("uploaded_at")
         }
         for doc in docs
     ]
@@ -339,5 +340,5 @@ def get_document(document_id: str):
     return {
         "id": str(document["_id"]),
         "title": document["title"],
-        "content": document["content"][:1000]
+        "content": document["content"]
     }
