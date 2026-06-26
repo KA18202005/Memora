@@ -38,14 +38,8 @@ export default function RecommendationSection({
                 >
                     AI Recommendations
                 </h2>
-
-                <p
+                <div
                     className="
-            text-slate-500
-          "
-                >
-                    <div
-                        className="
 flex
 flex-col
 items-center
@@ -53,43 +47,42 @@ justify-center
 py-12
 text-center
 "
-                    >
+                >
 
-                        <Brain
-                            size={48}
-                            className="
+                    <Brain
+                        size={48}
+                        className="
 text-slate-400
 mb-4
 "
-                        />
+                    />
 
-                        <h3
-                            className="
+                    <h3
+                        className="
 text-xl
 font-semibold
 "
-                        >
+                    >
 
-                            You're doing great!
+                        You're doing great!
 
-                        </h3>
+                    </h3>
 
-                        <p
-                            className="
+                    <p
+                        className="
 text-slate-500
 mt-2
 max-w-sm
 "
-                        >
+                    >
 
-                            Upload more documents and
-                            Memora will generate new
-                            AI-powered recommendations.
+                        Upload more documents and
+                        Memora will generate new
+                        AI-powered recommendations.
 
-                        </p>
+                    </p>
 
-                    </div>
-                </p>
+                </div>
 
             </Card>
 
