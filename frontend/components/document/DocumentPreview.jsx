@@ -32,7 +32,7 @@ export default function DocumentPreview({
                     whitespace-pre-wrap
                     leading-7
                     text-slate-700
-                    max-h-[500px]
+                    max-h-125
                     overflow-y-auto
                 "
             >
