@@ -1,149 +1,70 @@
 "use client";
+
 import { useEffect, useState } from "react";
 
-import StatsCard from "@/components/StatsCard";
-import WeakTopics from "@/components/WeakTopics";
-import Recommendations from "@/components/Recommendations";
-import RetentionChart from "@/components/RetentionChart";
-
 import {
-  getDashboard,
-} from "@/services/dashboardService";
+  DashboardHeader,
+  StatsGrid,
+  RecommendationSection,
+  WeakTopicsList,
+  RetentionChart,
+} from "@/components/dashboard";
+
+import { getDashboard } from "@/services/dashboardService";
 
 export default function DashboardPage() {
-
-  const [dashboard, setDashboard] =
-    useState(null);
-
-  useEffect(() => {
-
-    loadDashboard();
-
-  }, []);
-
+  const [dashboard, setDashboard] = useState(null);
 
   const loadDashboard = async () => {
-
     try {
-
-      const data =
-        await getDashboard();
-
-      console.log(
-        "Dashboard Data:",
-        data
-      );
-
-      setDashboard(
-        data
-      );
-
-    } catch (error) {
-
-      console.error(
-        "Dashboard Error:",
-        error
-      );
+      const data = await getDashboard();
+      setDashboard(data);
+    } catch (err) {
+      console.error(err);
     }
   };
 
-  const refreshDashboard =
-    async () => {
-
-      await loadDashboard();
-    };
+  useEffect(() => {
+    loadDashboard();
+  }, []);
 
   if (!dashboard) {
-
     return (
-      <div className="p-10">
-        Loading...
+      <div className="flex h-[70vh] items-center justify-center">
+        <p className="text-slate-500 text-lg">
+          Loading Dashboard...
+        </p>
       </div>
     );
   }
 
-  const stats =
-    dashboard.stats;
-
   return (
-      <div>
+    <div className="space-y-8">
 
-        <div className="flex justify-between items-center mb-8">
+      <DashboardHeader
+        onRefresh={loadDashboard}
+      />
 
-          <h1 className="text-4xl font-bold">
-            Dashboard
-          </h1>
+      <StatsGrid
+        stats={dashboard.stats}
+      />
 
-          <button
-            onClick={refreshDashboard}
-            className="
-            bg-blue-600
-            text-white
-            px-4
-            py-2
-            rounded-lg
-          "
-          >
-            Refresh
-          </button>
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
 
-        </div>
+        <RecommendationSection
+          recommendations={dashboard.recommendations}
+        />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-
-          <StatsCard
-            title="Documents"
-            value={stats.documents}
-          />
-
-          <StatsCard
-            title="Topics"
-            value={stats.topics}
-          />
-
-          <StatsCard
-            title="Strong Topics"
-            value={stats.strong_topics}
-          />
-
-          <StatsCard
-            title="Weak Topics"
-            value={stats.weak_topics}
-          />
-
-          <StatsCard
-            title="Avg Retention"
-            value={`${stats.average_retention}%`}
-          />
-
-        </div>
-
-        <div className="grid lg:grid-cols-2 gap-6 mt-8">
-
-          <WeakTopics
-            weakTopics={
-              dashboard.weak_topics
-            }
-          />
-
-          <Recommendations
-            recommendations={
-              dashboard.recommendations
-            }
-          />
-
-        </div>
-
-        <div className="mt-8">
-
-          <RetentionChart
-            recommendations={
-              dashboard.recommendations
-            }
-          />
-
-        </div>
+        <WeakTopicsList
+          weakTopics={dashboard.weak_topics}
+        />
 
       </div>
+
+      <RetentionChart
+        recommendations={dashboard.recommendations}
+      />
+
+    </div>
   );
 }
