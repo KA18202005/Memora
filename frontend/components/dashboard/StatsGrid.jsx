@@ -4,6 +4,10 @@ import { motion } from "framer-motion";
 
 import { Card } from "@/components/ui/card";
 
+import { Skeleton } from "@/components/ui/skeleton";
+
+import CountUp from "react-countup";
+
 import {
   FileText,
   Brain,
@@ -63,13 +67,14 @@ export default function StatsGrid({ stats }) {
           >
             <Card
               className="
-                rounded-2xl
-                border
-                shadow-sm
-                hover:shadow-xl
-                transition-all
-                duration-300
-                cursor-pointer
+                  rounded-2xl
+                  border
+                  shadow-sm
+                  hover:shadow-xl
+                  hover:-translate-y-1
+                  transition-all
+                  duration-300
+                  cursor-pointer
               "
             >
               <div className="p-6">
@@ -84,7 +89,14 @@ export default function StatsGrid({ stats }) {
 
                     <h2 className="text-4xl font-bold mt-4">
 
-                      {stats[item.key]}
+                      <CountUp
+
+                        end={stats[item.key]}
+
+                        duration={1.5}
+
+                      />
+
                       {item.suffix || ""}
 
                     </h2>

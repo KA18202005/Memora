@@ -18,6 +18,7 @@
     "next": "16.2.9",
     "radix-ui": "^1.6.0",
     "react": "19.2.4",
+    "react-countup": "^6.5.3",
     "react-dom": "19.2.4",
     "reactflow": "^11.11.4",
     "recharts": "^3.9.0",

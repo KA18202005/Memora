@@ -13,6 +13,66 @@ import {
 import { Card } from "@/components/ui/card";
 import { Brain } from "lucide-react";
 
+function CustomTooltip({
+
+    active,
+    payload
+
+}) {
+
+    if (
+        !active ||
+        !payload ||
+        !payload.length
+    ) {
+
+        return null;
+
+    }
+
+    return (
+
+        <div
+            className="
+bg-white
+border
+rounded-xl
+shadow-lg
+p-3
+"
+        >
+
+            <p
+                className="
+font-semibold
+"
+            >
+
+                {payload[0].payload.topic}
+
+            </p>
+
+            <p
+                className="
+text-blue-600
+mt-1
+"
+            >
+
+                Retention:
+
+                {" "}
+
+                {payload[0].value}%
+
+            </p>
+
+        </div>
+
+    );
+
+}
+
 export default function RetentionChart({
     recommendations,
 }) {
@@ -126,7 +186,9 @@ export default function RetentionChart({
                             domain={[0, 100]}
                         />
 
-                        <Tooltip />
+                        <Tooltip
+                            content={<CustomTooltip />}
+                        />
 
                         <Area
                             type="monotone"

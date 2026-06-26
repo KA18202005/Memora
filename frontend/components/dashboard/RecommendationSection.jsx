@@ -8,7 +8,9 @@ import {
     ArrowRight
 } from "lucide-react";
 
-import { motion } from "framer-motion";
+import {
+    motion
+} from "framer-motion";
 
 export default function RecommendationSection({
 
@@ -22,27 +24,71 @@ export default function RecommendationSection({
 
             <Card
                 className="
-                    rounded-2xl
-                    p-6
-                "
+          rounded-2xl
+          p-6
+        "
             >
 
                 <h2
                     className="
-                        text-xl
-                        font-semibold
-                        mb-4
-                    "
+            text-xl
+            font-bold
+            mb-4
+          "
                 >
                     AI Recommendations
                 </h2>
 
                 <p
                     className="
-                        text-slate-500
-                    "
+            text-slate-500
+          "
                 >
-                    No recommendations available.
+                    <div
+                        className="
+flex
+flex-col
+items-center
+justify-center
+py-12
+text-center
+"
+                    >
+
+                        <Brain
+                            size={48}
+                            className="
+text-slate-400
+mb-4
+"
+                        />
+
+                        <h3
+                            className="
+text-xl
+font-semibold
+"
+                        >
+
+                            You're doing great!
+
+                        </h3>
+
+                        <p
+                            className="
+text-slate-500
+mt-2
+max-w-sm
+"
+                        >
+
+                            Upload more documents and
+                            Memora will generate new
+                            AI-powered recommendations.
+
+                        </p>
+
+                    </div>
                 </p>
 
             </Card>
@@ -51,131 +97,161 @@ export default function RecommendationSection({
 
     }
 
+    const badgeColor = {
+
+        LOW:
+            "bg-green-500 text-white",
+
+        MEDIUM:
+            "bg-yellow-500 text-white",
+
+        HIGH:
+            "bg-orange-500 text-white",
+
+        CRITICAL:
+            "bg-red-500 text-white"
+
+    };
+
     return (
 
         <Card
             className="
-                rounded-2xl
-                p-6
-            "
+        rounded-2xl
+        p-6
+      "
         >
 
             <div
                 className="
-                    flex
-                    justify-between
-                    items-center
-                    mb-6
-                "
+          flex
+          justify-between
+          items-center
+          mb-6
+        "
             >
 
                 <h2
                     className="
-                        text-xl
-                        font-bold
-                    "
+            text-xl
+            font-bold
+          "
                 >
                     AI Recommendations
                 </h2>
 
                 <Brain
                     className="
-                        text-blue-600
-                    "
+            text-blue-600
+          "
                 />
 
             </div>
 
             <div
                 className="
-                    space-y-4
-                "
+          space-y-4
+        "
             >
 
-                {recommendations.map(
+                {
 
-                    (item, index) => (
+                    recommendations.map(
 
-                        <motion.div
+                        (
 
-                            key={index}
+                            item,
+                            index
 
-                            whileHover={{
-                                scale: 1.02
-                            }}
+                        ) => (
 
-                            className="
-                                border
-                                rounded-xl
-                                p-4
-                                transition
-                            "
-                        >
+                            <motion.div
 
-                            <div
+                                key={index}
+
+                                whileHover={{
+                                    scale: 1.02
+                                }}
+
                                 className="
-                                    flex
-                                    justify-between
-                                    items-center
-                                "
+                  border
+                  rounded-xl
+                  p-4
+                  transition
+                "
+
                             >
 
-                                <h3
+                                <div
                                     className="
-                                        font-semibold
-                                        text-lg
-                                    "
+                    flex
+                    justify-between
+                    items-center
+                  "
                                 >
-                                    {item.topic}
-                                </h3>
 
-                                <Badge>
+                                    <h3
+                                        className="
+                      font-semibold
+                      text-lg
+                    "
+                                    >
+                                        {item.topic}
+                                    </h3>
 
-                                    {item.priority}
+                                    <Badge
+                                        className={
+                                            badgeColor[
+                                            item.priority
+                                            ]
+                                        }
+                                    >
+                                        {item.priority}
+                                    </Badge>
 
-                                </Badge>
+                                </div>
 
-                            </div>
-
-                            <p
-                                className="
-                                    text-sm
-                                    text-slate-500
-                                    mt-3
-                                "
-                            >
-                                {item.recommendation}
-                            </p>
-
-                            <div
-                                className="
-                                    flex
-                                    justify-between
-                                    items-center
-                                    mt-5
-                                "
-                            >
-
-                                <span
+                                <p
                                     className="
-                                        text-sm
-                                        text-blue-600
-                                    "
+                    text-sm
+                    text-slate-500
+                    mt-3
+                  "
                                 >
-                                    {item.revision_type}
-                                </span>
+                                    {item.recommendation}
+                                </p>
 
-                                <ArrowRight
-                                    size={18}
-                                />
+                                <div
+                                    className="
+                    flex
+                    justify-between
+                    items-center
+                    mt-5
+                  "
+                                >
 
-                            </div>
+                                    <span
+                                        className="
+                      text-sm
+                      text-blue-600
+                    "
+                                    >
+                                        {item.revision_type}
+                                    </span>
 
-                        </motion.div>
+                                    <ArrowRight
+                                        size={18}
+                                    />
+
+                                </div>
+
+                            </motion.div>
+
+                        )
 
                     )
 
-                )}
+                }
 
             </div>
 

@@ -70,8 +70,8 @@ export default function Sidebar() {
               className={`flex items-center gap-3 px-4 py-3 rounded-xl transition
               ${
                 pathname === item.href
-                  ? "bg-blue-600"
-                  : "hover:bg-slate-800"
+                  ? "bg-blue-600 shadow-lg shadow-blue-500/30"
+                  : "hover:bg-slate-800 hover:translate-x-1 transition-all duration-300"
               }`}
             >
               <Icon size={20} />

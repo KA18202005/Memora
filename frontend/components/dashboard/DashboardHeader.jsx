@@ -1,68 +1,103 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { RefreshCw } from "lucide-react";
+
+import {
+  RefreshCw,
+  Loader2
+} from "lucide-react";
 
 export default function DashboardHeader({
 
-    onRefresh
+  onRefresh,
+  isRefreshing
 
 }) {
 
-    return (
+  return (
 
-        <div
-            className="
-                flex
-                justify-between
-                items-center
-                mb-10
-            "
+    <div
+      className="
+        flex
+        flex-col
+        md:flex-row
+        justify-between
+        items-start
+        md:items-center
+        gap-6
+        mb-8
+      "
+    >
+
+      <div>
+
+        <h1
+          className="
+            text-4xl
+            font-bold
+          "
         >
+          Dashboard
+        </h1>
 
-            <div>
+        <p
+          className="
+            text-slate-500
+            mt-2
+          "
+        >
+          Track your learning progress and AI recommendations.
+        </p>
 
-                <h1
-                    className="
-                        text-4xl
-                        font-bold
-                        text-slate-900
-                    "
-                >
-                    Dashboard
-                </h1>
+      </div>
 
-                <p
-                    className="
-                        text-slate-500
-                        mt-2
-                    "
-                >
-                    Monitor your learning progress,
-                    retention and AI recommendations.
-                </p>
+      <Button
+        onClick={onRefresh}
+        disabled={isRefreshing}
+        className="
+          rounded-xl
+        "
+      >
 
-            </div>
+        {
 
-            <Button
-                onClick={onRefresh}
-                className="
-                    rounded-xl
-                "
-            >
-                <RefreshCw
-                    className="
-                        mr-2
-                    "
-                    size={18}
-                />
+          isRefreshing ?
 
-                Refresh
+          <Loader2
+            className="
+              mr-2
+              animate-spin
+            "
+            size={18}
+          />
 
-            </Button>
+          :
 
-        </div>
+          <RefreshCw
+            className="
+              mr-2
+            "
+            size={18}
+          />
 
-    );
+        }
+
+        {
+
+          isRefreshing ?
+
+          "Refreshing..."
+
+          :
+
+          "Refresh"
+
+        }
+
+      </Button>
+
+    </div>
+
+  );
 
 }

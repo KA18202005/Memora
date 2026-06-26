@@ -77,7 +77,7 @@ export default function Navbar() {
           <div>
 
             <p className="font-semibold">
-              Welcome
+              Welcome Back 👋
             </p>
 
             <p
@@ -86,7 +86,7 @@ export default function Navbar() {
                 text-gray-500
               "
             >
-              Memora User
+              Continue Learning
             </p>
 
           </div>
