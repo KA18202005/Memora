@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-
 import {
   LayoutDashboard,
   Upload,
@@ -10,7 +9,8 @@ import {
   MessageSquare,
   Network,
   BrainCircuit,
-  LogOut
+  LogOut,
+  BookOpen 
 } from "lucide-react";
 
 const menu = [
@@ -44,6 +44,11 @@ const menu = [
     href: "/revision",
     icon: BrainCircuit,
   },
+  {
+    name: "Topics",
+    href: "/topics",
+    icon: BookOpen,
+  }
 ];
 
 export default function Sidebar() {
@@ -68,11 +73,10 @@ export default function Sidebar() {
               key={item.name}
               href={item.href}
               className={`flex items-center gap-3 px-4 py-3 rounded-xl transition
-              ${
-                pathname === item.href
+              ${pathname === item.href
                   ? "bg-blue-600 shadow-lg shadow-blue-500/30"
                   : "hover:bg-slate-800 hover:translate-x-1 transition-all duration-300"
-              }`}
+                }`}
             >
               <Icon size={20} />
               {item.name}

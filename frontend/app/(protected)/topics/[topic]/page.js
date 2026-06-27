@@ -1,109 +1,145 @@
 "use client";
 
-import {
-  useEffect,
-  useState
-} from "react";
+import { useEffect, useState } from "react";
+
+import { useParams } from "next/navigation";
 
 import {
-  useParams
-} from "next/navigation";
+
+    TopicHeader,
+
+    TopicDetails,
+
+    TopicActions
+
+} from "@/components/topic";
 
 import {
-  getTopic
+
+    getTopic
+
 } from "@/services/topicService";
 
 export default function TopicPage() {
 
-  const params =
-    useParams();
+    const params =
+        useParams();
 
-  const [data, setData] =
-    useState(null);
+    const [topicData, setTopicData] =
+        useState(null);
 
-  useEffect(() => {
+    const [loading, setLoading] =
+        useState(true);
 
-    if (params?.topic) {
+    useEffect(() => {
 
-      loadTopic();
+        if (params?.topic) {
+
+            loadTopic();
+
+        }
+
+    }, [params]);
+
+    const loadTopic = async () => {
+
+        try {
+
+            setLoading(true);
+
+            const result =
+                await getTopic(
+                    params.topic
+                );
+
+            console.log(result);
+
+            setTopicData(result);
+
+        }
+
+        catch (error) {
+
+            console.error(error);
+
+        }
+
+        finally {
+
+            setLoading(false);
+
+        }
+
+    };
+
+    if (loading) {
+
+        return (
+
+            <div
+                className="
+                    flex
+                    justify-center
+                    items-center
+                    h-[60vh]
+                "
+            >
+
+                Loading...
+
+            </div>
+
+        );
 
     }
 
-  }, [params]);
+    if (!topicData) {
 
-  const loadTopic =
-    async () => {
+        return (
 
-      try {
+            <div
+                className="
+                    flex
+                    justify-center
+                    items-center
+                    h-[60vh]
+                "
+            >
 
-        const result =
-          await getTopic(
-            params.topic
-          );
+                Topic not found.
 
-        setData(
-          result
+            </div>
+
         );
 
-      } catch (error) {
-
-        console.error(
-          error
-        );
-      }
-    };
-
-  if (!data) {
+    }
 
     return (
-      <div>
-        Loading...
-      </div>
+
+        <div
+            className="
+                max-w-6xl
+                mx-auto
+                space-y-8
+            "
+        >
+
+            <TopicHeader />
+
+            <TopicDetails
+
+                topicData={topicData}
+
+            />
+
+            <TopicActions
+
+                topic={topicData.topic}
+
+            />
+
+        </div>
+
     );
-  }
 
-  return (
-    <div className="max-w-4xl mx-auto">
-
-      <h1 className="text-4xl font-bold mb-8">
-        {data.topic}
-      </h1>
-
-      <div
-        className="
-          bg-white
-          rounded-xl
-          shadow
-          p-6
-        "
-      >
-
-        <p>
-          Retention Score:
-          {" "}
-          {data.retention_score}
-        </p>
-
-        <p>
-          Priority:
-          {" "}
-          {data.priority}
-        </p>
-
-        <p>
-          Recommendation:
-          {" "}
-          {data.recommendation}
-        </p>
-
-        <p>
-          Revision Type:
-          {" "}
-          {data.revision_type}
-        </p>
-
-      </div>
-
-    </div>
-  );
 }
