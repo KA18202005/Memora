@@ -114,9 +114,14 @@ async def upload_document(
     for topic in topics:
 
         db.topics.insert_one({
-            "document_id": document_id,
-            "topic": topic
-        })
+
+        "user_id": user_id,
+
+        "document_id": document_id,
+
+        "topic": topic
+
+    })
         
     for edge in relationships:
         
@@ -316,6 +321,36 @@ def get_graph(document_id: str):
         ],
         "edges": edges
     }
+    
+
+@router.get("/topics")
+def get_all_topics(
+
+    user_id: str = Depends(
+        get_current_user
+    )
+
+):
+
+    topics = db.topics.find({
+
+        "user_id": user_id
+
+    })
+
+    unique_topics = sorted(
+
+        list({
+
+            topic["topic"]
+
+            for topic in topics
+
+        })
+
+    )
+
+    return unique_topics
 
 
 # ==========================

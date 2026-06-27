@@ -1,152 +1,436 @@
 "use client";
 
-import {
-    useState
-} from "react";
+import { useState, useEffect } from "react";
 
 import {
-    getRevision
+
+    RevisionHeader,
+    TopicInput,
+    RecommendedTopics,
+    QuestionCard,
+    AnswerCard,
+    EvaluationCard,
+    AnalyticsCard,
+    RecommendationCard,
+    RevisionProgress,
+    RevisionComplete
+
+} from "@/components/revision";
+
+import {
+
+    generateRevision,
+    evaluateRevision,
+    getAnalytics,
+    getRecommendation,
+    getTopics
+
 } from "@/services/revisionService";
+
+import { Button } from "@/components/ui/button";
 
 export default function RevisionPage() {
 
     const [topic, setTopic] =
         useState("");
 
-    const [data, setData] =
+    const [questions, setQuestions] =
+        useState([]);
+
+    const [currentQuestion, setCurrentQuestion] =
+        useState(0);
+
+    const [evaluation, setEvaluation] =
+        useState(null);
+
+    const [analytics, setAnalytics] =
+        useState(null);
+
+    const [recommendation, setRecommendation] =
         useState(null);
 
     const [loading, setLoading] =
         useState(false);
 
-    const handleGenerate =
-        async () => {
+    const [completed, setCompleted] =
+        useState(false);
+
+    const [topics, setTopics] =
+        useState([]);
+
+    useEffect(() => {
+
+        loadTopics();
+
+    }, []);
+
+    const loadTopics = async () => {
+
+        try {
+
+            const data = await getTopics();
+
+            console.log("Topics from API:", data);
+
+            setTopics(data);
+
+        }
+
+        catch (error) {
+
+            console.error(error);
+
+        }
+
+    };
+
+    const generateQuestions =
+        async (
+
+            selectedTopic = topic
+
+        ) => {
+
+            if (!selectedTopic.trim()) {
+
+                return;
+
+            }
 
             try {
 
                 setLoading(true);
 
                 const result =
-                    await getRevision(
-                        topic
+                    await generateRevision(
+
+                        selectedTopic
+
                     );
 
-                setData(result);
+                setTopic(
+                    selectedTopic
+                );
 
-            } catch (error) {
+                setQuestions(
+                    result.questions
+                );
+
+                setCurrentQuestion(0);
+
+                setCompleted(false);
+
+                setEvaluation(null);
+
+                setAnalytics(null);
+
+                setRecommendation(null);
+
+            }
+
+            catch (error) {
 
                 console.error(error);
 
-            } finally {
+            }
+
+            finally {
 
                 setLoading(false);
 
             }
+
         };
 
-    return (
-        <div className="max-w-4xl mx-auto">
+    const evaluateAnswer =
+        async (payload) => {
 
-            <h1 className="text-4xl font-bold mb-8">
-                Revision Engine
-            </h1>
+            try {
 
-            <input
-                type="text"
-                placeholder="Enter Topic"
-                value={topic}
-                onChange={(e) =>
-                    setTopic(
-                        e.target.value
-                    )
-                }
+                setLoading(true);
+
+                const result =
+                    await evaluateRevision(payload);
+                console.log("Evaluation Response:", result);
+
+                setEvaluation(result);
+
+                const analyticsResult =
+                    await getAnalytics(topic);
+
+                setAnalytics(
+                    analyticsResult
+                );
+
+                const recommendationResult =
+                    await getRecommendation(topic);
+
+                setRecommendation(
+                    recommendationResult
+                );
+
+            }
+
+            catch (error) {
+
+                console.error(error);
+
+            }
+
+            finally {
+
+                setLoading(false);
+
+            }
+
+        };
+
+    const nextQuestion = () => {
+
+        if (
+
+            currentQuestion <
+
+            questions.length - 1
+
+        ) {
+
+            setCurrentQuestion(
+
+                currentQuestion + 1
+
+            );
+
+            setEvaluation(null);
+
+            setAnalytics(null);
+
+            setRecommendation(null);
+
+        }
+
+        else {
+
+            setCompleted(true);
+
+        }
+
+    };
+
+    const handleTopicClick =
+        async (
+
+            selectedTopic
+
+        ) => {
+
+            await generateQuestions(
+
+                selectedTopic
+
+            );
+
+        };
+
+
+    if (completed) {
+
+        return (
+
+            <div
                 className="
-          w-full
-          border
-          rounded-lg
-          p-4
-        "
+                    max-w-4xl
+                    mx-auto
+                    space-y-8
+                "
+            >
+
+                <RevisionHeader />
+
+
+
+                <RevisionComplete
+
+                    analytics={analytics}
+
+                    recommendation={recommendation}
+
+                />
+
+            </div>
+
+        );
+
+    }
+
+    return (
+
+        <div
+            className="
+                max-w-6xl
+                mx-auto
+                space-y-8
+            "
+        >
+
+            <RevisionHeader />
+
+            <RecommendedTopics
+
+                topics={topics}
+
+                onSelect={handleTopicClick}
+
             />
 
-            <button
-                onClick={handleGenerate}
+            <div
                 className="
-          bg-blue-600
-          text-white
-          px-5
-          py-2
-          rounded-lg
-          mt-4
-        "
+        flex
+        items-center
+        gap-4
+    "
             >
-                {loading
-                    ? "Generating..."
-                    : "Generate Revision Plan"}
-            </button>
 
-            {data && (
+                <div className="flex-1 border-t" />
 
-                <div
-                    className="
-            mt-8
-            bg-white
-            p-6
-            rounded-xl
-            shadow
-          "
-                >
+                <span className="text-slate-500 text-sm">
 
-                    <h2 className="text-2xl font-bold">
-                        {data.topic}
-                    </h2>
+                    OR
 
-                    <p className="mt-4">
-                        Retention Score:
-                        {" "}
-                        {data.retention_score}%
-                    </p>
+                </span>
 
-                    <p>
-                        Average Score:
-                        {" "}
-                        {data.average_score}
-                    </p>
+                <div className="flex-1 border-t" />
 
-                    <div className="mt-4">
+            </div>
 
-                        <h3 className="font-semibold">
-                            Revision Plan
-                        </h3>
+            <TopicInput
 
-                        <div className="mt-4">
+                topic={topic}
 
-                            <h3 className="font-semibold">
-                                Recommendation
-                            </h3>
+                setTopic={setTopic}
 
-                            <p>
-                                {data.recommendation}
-                            </p>
+                onGenerate={generateQuestions}
 
-                            <p className="mt-2">
-                                Revision Type:
-                                {" "}
-                                {data.revision_type}
-                            </p>
+                loading={loading}
 
-                            <p className="mt-2">
-                                Priority:
-                                {" "}
-                                {data.priority}
-                            </p>
+            />
 
-                        </div>
+            {
 
-                    </div>
+                questions.length > 0 && (
 
-                </div>
-            )}
+                    <>
+                        <RevisionProgress
+
+                            current={currentQuestion}
+
+                            total={questions.length}
+
+                        />
+
+                        <QuestionCard
+
+                            index={currentQuestion}
+
+                            question={
+                                questions[currentQuestion]
+                            }
+
+                        />
+
+                        {
+
+                            !evaluation && (
+
+                                <AnswerCard
+
+                                    topic={topic}
+
+                                    question={
+                                        questions[currentQuestion].question
+                                    }
+
+                                    onEvaluate={
+                                        evaluateAnswer
+                                    }
+
+                                    loading={loading}
+
+                                />
+
+                            )
+
+                        }
+
+                    </>
+
+                )
+
+            }
+
+            <EvaluationCard
+
+                evaluation={evaluation}
+
+            />
+
+            <div
+                className="
+                    grid
+                    md:grid-cols-2
+                    gap-6
+                "
+            >
+
+                <AnalyticsCard
+
+                    analytics={analytics}
+
+                />
+
+                <RecommendationCard
+
+                    recommendation={recommendation}
+
+                />
+
+            </div>
+
+            {
+
+                evaluation &&
+
+                currentQuestion <
+
+                questions.length - 1 && (
+
+                    <Button
+
+                        onClick={nextQuestion}
+
+                        className="
+                            bg-blue-600
+                            text-white
+                            px-6
+                            py-3
+                            rounded-xl
+                        "
+
+                    >
+
+                        Next Question
+
+                    </Button>
+
+                )
+
+            }
+
+
 
         </div>
+
+
     );
+
 }

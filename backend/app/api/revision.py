@@ -238,3 +238,32 @@ def get_topic_details(
         "analytics": analytics
 
     }
+
+@router.get("/topics")
+def get_all_topics(
+
+    user_id: str = Depends(
+        get_current_user
+    )
+
+):
+
+    topics = db.topics.find({
+
+        "user_id": user_id
+
+    })
+
+    unique_topics = sorted(
+
+        {
+
+            item["topic"]
+
+            for item in topics
+
+        }
+
+    )
+
+    return unique_topics
