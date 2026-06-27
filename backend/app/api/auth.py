@@ -3,6 +3,11 @@ from app.schemas.user_schema import UserCreate
 from app.database.mongodb import db
 from fastapi import HTTPException
 from app.core.security import hash_password
+from fastapi import Depends
+
+from bson import ObjectId
+
+from app.dependencies import get_current_user
 from app.schemas.user_schema import UserLogin
 from app.core.security import (
     verify_password,
@@ -80,4 +85,39 @@ def login(user: UserLogin):
     return {
         "access_token": token,
         "token_type": "bearer"
+    }
+
+@router.get("/me")
+def get_current_profile(
+
+    user_id: str = Depends(
+        get_current_user
+    )
+
+):
+
+    user = db.users.find_one({
+
+        "_id": ObjectId(user_id)
+
+    })
+
+    if not user:
+
+        raise HTTPException(
+
+            status_code=404,
+
+            detail="User not found"
+
+        )
+
+    return {
+
+        "id": str(user["_id"]),
+
+        "name": user["name"],
+
+        "email": user["email"]
+
     }

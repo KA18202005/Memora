@@ -1,7 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import {
+  usePathname,
+  useRouter
+} from "next/navigation";
 import {
   LayoutDashboard,
   Upload,
@@ -10,7 +13,7 @@ import {
   Network,
   BrainCircuit,
   LogOut,
-  BookOpen 
+  BookOpen
 } from "lucide-react";
 
 const menu = [
@@ -54,6 +57,19 @@ const menu = [
 export default function Sidebar() {
 
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleLogout = () => {
+
+    localStorage.removeItem("token");
+
+    sessionStorage.clear();
+
+    router.replace("/login");
+
+    router.refresh();
+
+  };
 
   return (
     <aside className="w-64 h-screen bg-slate-900 text-white flex flex-col">
@@ -87,17 +103,21 @@ export default function Sidebar() {
       </nav>
 
       <button
+
+        onClick={handleLogout}
+
         className="
-          m-4
-          flex
-          items-center
-          gap-3
-          px-4
-          py-3
-          rounded-xl
-          hover:bg-red-600
-          transition
-        "
+        m-4
+        flex
+        items-center
+        gap-3
+        px-4
+        py-3
+        rounded-xl
+        hover:bg-red-600
+        transition
+    "
+
       >
         <LogOut size={20} />
         Logout

@@ -1,39 +1,43 @@
 "use client";
 
-import {
+import { useState } from "react";
 
-    useState
+import { useRouter } from "next/navigation";
 
-} from "react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 
-import {
+import { login as loginUser } from "@/services/authService";
 
-    useRouter
-
-} from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 
 import {
 
-    login as loginUser
+    AuthLayout,
 
-} from "@/services/authService";
+    AuthCard,
 
-import {
+    AuthHeader,
 
-    useAuth
+    AuthInput,
 
-} from "@/context/AuthContext";
+    AuthFooter
+
+} from "@/components/auth";
 
 export default function LoginPage() {
 
-    const router =
-        useRouter();
+    const router = useRouter();
 
-    const {
+    const { login } = useAuth();
 
-        login
+    const [loading, setLoading] =
+        useState(false);
 
-    } = useAuth();
+    const [showPassword, setShowPassword] =
+        useState(false);
+
+    const [error, setError] =
+        useState("");
 
     const [form, setForm] =
         useState({
@@ -44,108 +48,268 @@ export default function LoginPage() {
 
         });
 
-    const handleSubmit =
-        async (e) => {
+    const handleSubmit = async (e) => {
 
-            e.preventDefault();
+        e.preventDefault();
 
-            try {
+        setError("");
 
-                const data =
-                    await loginUser(
-                        form
-                    );
+        try {
 
-                login(
-                    data.access_token
-                );
+            setLoading(true);
 
-                router.push(
-                    "/dashboard"
-                );
+            const data =
+                await loginUser(form);
 
-            }
+            await login(data.access_token);
 
-            catch (error) {
+            router.push("/dashboard");
 
-                console.error(
-                    error
-                );
+        }
 
-                alert(
-                    "Login Failed"
-                );
+        catch (err) {
 
-            }
+            console.error(err);
 
-        };
+            setError(
+                "Invalid email or password."
+            );
+
+        }
+
+        finally {
+
+            setLoading(false);
+
+        }
+
+    };
 
     return (
 
-        <div className="max-w-md mx-auto mt-10">
+        <AuthLayout>
 
-            <h1 className="text-3xl font-bold mb-6">
+            <AuthCard>
 
-                Login
+                <AuthHeader
 
-            </h1>
+                    title="Welcome Back"
 
-            <form
-                onSubmit={handleSubmit}
-                className="space-y-4"
-            >
+                    subtitle="Continue building your AI-powered second brain."
 
-                <input
-                    type="email"
-                    placeholder="Email"
-                    className="w-full border p-3 rounded"
-                    value={form.email}
-                    onChange={(e) =>
-                        setForm({
-
-                            ...form,
-
-                            email:
-                                e.target.value
-
-                        })
-                    }
                 />
 
-                <input
-                    type="password"
-                    placeholder="Password"
-                    className="w-full border p-3 rounded"
-                    value={form.password}
-                    onChange={(e) =>
-                        setForm({
+                <form
 
-                            ...form,
+                    onSubmit={handleSubmit}
 
-                            password:
-                                e.target.value
+                    className="space-y-5"
 
-                        })
-                    }
-                />
-
-                <button
-                    className="
-                    bg-green-600
-                    text-white
-                    px-5
-                    py-2
-                    rounded
-                "
                 >
 
-                    Login
+                    <AuthInput
 
-                </button>
+                        type="email"
 
-            </form>
+                        placeholder="Email"
 
-        </div>
+                        value={form.email}
+
+                        onChange={(e) =>
+
+                            setForm({
+
+                                ...form,
+
+                                email: e.target.value
+
+                            })
+
+                        }
+
+                    />
+
+                    <div className="relative">
+
+                        <AuthInput
+
+                            type={
+
+                                showPassword
+
+                                    ?
+
+                                    "text"
+
+                                    :
+
+                                    "password"
+
+                            }
+
+                            placeholder="Password"
+
+                            value={form.password}
+
+                            onChange={(e) =>
+
+                                setForm({
+
+                                    ...form,
+
+                                    password: e.target.value
+
+                                })
+
+                            }
+
+                        />
+
+                        <button
+
+                            type="button"
+
+                            onClick={() =>
+
+                                setShowPassword(
+
+                                    !showPassword
+
+                                )
+
+                            }
+
+                            className="
+
+                                absolute
+
+                                right-4
+
+                                top-4
+
+                                text-slate-400
+
+                            "
+
+                        >
+
+                            {
+
+                                showPassword
+
+                                    ?
+
+                                    <EyeOff size={18} />
+
+                                    :
+
+                                    <Eye size={18} />
+
+                            }
+
+                        </button>
+
+                    </div>
+
+                    {
+
+                        error &&
+
+                        <p
+
+                            className="
+
+                                text-red-500
+
+                                text-sm
+
+                            "
+
+                        >
+
+                            {error}
+
+                        </p>
+
+                    }
+
+                    <button
+
+                        disabled={loading}
+
+                        className="
+
+                            w-full
+
+                            bg-violet-600
+
+                            hover:bg-violet-700
+
+                            text-white
+
+                            rounded-xl
+
+                            py-3
+
+                            transition
+
+                            disabled:opacity-50
+
+                            flex
+
+                            items-center
+
+                            justify-center
+
+                            gap-2
+
+                        "
+
+                    >
+
+                        {
+
+                            loading
+
+                                ?
+
+                                <>
+
+                                    <Loader2
+
+                                        size={18}
+
+                                        className="animate-spin"
+
+                                    />
+
+                                    Logging in...
+
+                                </>
+
+                                :
+
+                                "Login"
+
+                        }
+
+                    </button>
+
+                </form>
+
+                <AuthFooter
+
+                    text="Don't have an account?"
+
+                    link="/signup"
+
+                    linkText="Create one"
+
+                />
+
+            </AuthCard>
+
+        </AuthLayout>
 
     );
 

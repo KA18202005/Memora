@@ -1,114 +1,335 @@
 "use client";
 
 import { useState } from "react";
-import { signup } from "@/services/authService";
+
 import { useRouter } from "next/navigation";
+
+import { Eye, EyeOff, Loader2 } from "lucide-react";
+
+import { signup } from "@/services/authService";
+
+import {
+
+    AuthLayout,
+
+    AuthCard,
+
+    AuthHeader,
+
+    AuthInput,
+
+    AuthFooter
+
+} from "@/components/auth";
 
 export default function SignupPage() {
 
-  const router = useRouter();
+    const router = useRouter();
 
-  const [form, setForm] =
-    useState({
-      name: "",
-      email: "",
-      password: ""
-    });
+    const [loading, setLoading] =
+        useState(false);
 
-  const handleSubmit =
-    async (e) => {
+    const [showPassword, setShowPassword] =
+        useState(false);
 
-      e.preventDefault();
+    const [error, setError] =
+        useState("");
 
-      try {
+    const [form, setForm] =
+        useState({
 
-        await signup(form);
+            name: "",
 
-        alert(
-          "Signup Successful"
-        );
+            email: "",
 
-        router.push(
-          "/login"
-        );
+            password: ""
 
-      } catch (error) {
+        });
 
-        console.error(
-          error
-        );
+    const handleSubmit = async (e) => {
 
-        alert(
-          "Signup Failed"
-        );
-      }
+        e.preventDefault();
+
+        setError("");
+
+        try {
+
+            setLoading(true);
+
+            await signup(form);
+
+            router.push("/login");
+
+        }
+
+        catch (err) {
+
+            console.error(err);
+
+            setError(
+
+                "Unable to create account."
+
+            );
+
+        }
+
+        finally {
+
+            setLoading(false);
+
+        }
+
     };
 
-  return (
-    <div className="max-w-md mx-auto mt-10">
+    return (
 
-      <h1 className="text-3xl font-bold mb-6">
-        Signup
-      </h1>
+        <AuthLayout>
 
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-4"
-      >
+            <AuthCard>
 
-        <input
-          type="text"
-          placeholder="Name"
-          className="w-full border p-3 rounded"
-          value={form.name}
-          onChange={(e) =>
-            setForm({
-              ...form,
-              name: e.target.value
-            })
-          }
-        />
+                <AuthHeader
 
-        <input
-          type="email"
-          placeholder="Email"
-          className="w-full border p-3 rounded"
-          value={form.email}
-          onChange={(e) =>
-            setForm({
-              ...form,
-              email: e.target.value
-            })
-          }
-        />
+                    title="Create Account"
 
-        <input
-          type="password"
-          placeholder="Password"
-          className="w-full border p-3 rounded"
-          value={form.password}
-          onChange={(e) =>
-            setForm({
-              ...form,
-              password: e.target.value
-            })
-          }
-        />
+                    subtitle="Start building your AI-powered second brain."
 
-        <button
-          className="
-            bg-blue-600
-            text-white
-            px-5
-            py-2
-            rounded
-          "
-        >
-          Signup
-        </button>
+                />
 
-      </form>
+                <form
 
-    </div>
-  );
+                    onSubmit={handleSubmit}
+
+                    className="space-y-5"
+
+                >
+
+                    <AuthInput
+
+                        type="text"
+
+                        placeholder="Full Name"
+
+                        value={form.name}
+
+                        onChange={(e)=>
+
+                            setForm({
+
+                                ...form,
+
+                                name:e.target.value
+
+                            })
+
+                        }
+
+                    />
+
+                    <AuthInput
+
+                        type="email"
+
+                        placeholder="Email"
+
+                        value={form.email}
+
+                        onChange={(e)=>
+
+                            setForm({
+
+                                ...form,
+
+                                email:e.target.value
+
+                            })
+
+                        }
+
+                    />
+
+                    <div className="relative">
+
+                        <AuthInput
+
+                            type={
+
+                                showPassword
+
+                                    ?
+
+                                    "text"
+
+                                    :
+
+                                    "password"
+
+                            }
+
+                            placeholder="Password"
+
+                            value={form.password}
+
+                            onChange={(e)=>
+
+                                setForm({
+
+                                    ...form,
+
+                                    password:e.target.value
+
+                                })
+
+                            }
+
+                        />
+
+                        <button
+
+                            type="button"
+
+                            onClick={()=>
+
+                                setShowPassword(
+
+                                    !showPassword
+
+                                )
+
+                            }
+
+                            className="
+
+                                absolute
+
+                                right-4
+
+                                top-4
+
+                                text-slate-400
+
+                            "
+
+                        >
+
+                            {
+
+                                showPassword
+
+                                ?
+
+                                <EyeOff size={18}/>
+
+                                :
+
+                                <Eye size={18}/>
+
+                            }
+
+                        </button>
+
+                    </div>
+
+                    {
+
+                        error &&
+
+                        <p
+
+                            className="
+
+                                text-red-500
+
+                                text-sm
+
+                            "
+
+                        >
+
+                            {error}
+
+                        </p>
+
+                    }
+
+                    <button
+
+                        disabled={loading}
+
+                        className="
+
+                            w-full
+
+                            bg-violet-600
+
+                            hover:bg-violet-700
+
+                            text-white
+
+                            rounded-xl
+
+                            py-3
+
+                            transition
+
+                            disabled:opacity-50
+
+                            flex
+
+                            items-center
+
+                            justify-center
+
+                            gap-2
+
+                        "
+
+                    >
+
+                        {
+
+                            loading
+
+                            ?
+
+                            <>
+
+                                <Loader2
+
+                                    size={18}
+
+                                    className="animate-spin"
+
+                                />
+
+                                Creating...
+
+                            </>
+
+                            :
+
+                            "Create Account"
+
+                        }
+
+                    </button>
+
+                </form>
+
+                <AuthFooter
+
+                    text="Already have an account?"
+
+                    link="/login"
+
+                    linkText="Login"
+
+                />
+
+            </AuthCard>
+
+        </AuthLayout>
+
+    );
+
 }

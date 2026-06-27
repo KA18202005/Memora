@@ -1,11 +1,22 @@
 "use client";
 
 import {
+
     createContext,
+
     useContext,
+
     useEffect,
+
     useState
+
 } from "react";
+
+import {
+
+    getProfile
+
+} from "@/services/authService";
 
 const AuthContext =
     createContext();
@@ -22,16 +33,29 @@ export function AuthProvider({
     const [loading, setLoading] =
         useState(true);
 
-    useEffect(() => {
+    const loadUser = async () => {
 
         const token =
             localStorage.getItem(
                 "token"
             );
 
-        if (token) {
+        if (!token) {
+
+            setLoading(false);
+
+            return;
+
+        }
+
+        try {
+
+            const profile =
+                await getProfile();
 
             setUser({
+
+                ...profile,
 
                 token
 
@@ -39,11 +63,33 @@ export function AuthProvider({
 
         }
 
-        setLoading(false);
+        catch (error) {
+
+            console.error(error);
+
+            localStorage.removeItem(
+                "token"
+            );
+
+            setUser(null);
+
+        }
+
+        finally {
+
+            setLoading(false);
+
+        }
+
+    };
+
+    useEffect(() => {
+
+        loadUser();
 
     }, []);
 
-    const login = (
+    const login = async (
 
         token
 
@@ -57,33 +103,24 @@ export function AuthProvider({
 
         );
 
-        setUser({
-
-            token
-
-        });
+        await loadUser();
 
     };
 
     const logout = () => {
 
         localStorage.removeItem(
-
             "token"
-
         );
 
-        setUser(
-
-            null
-
-        );
+        setUser(null);
 
     };
 
     return (
 
         <AuthContext.Provider
+
             value={{
 
                 user,
@@ -92,9 +129,12 @@ export function AuthProvider({
 
                 login,
 
-                logout
+                logout,
+
+                refreshUser: loadUser
 
             }}
+
         >
 
             {children}
