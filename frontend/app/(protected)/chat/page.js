@@ -1,8 +1,14 @@
 "use client";
 
+import { useState } from "react";
+
 import {
-  useState
-} from "react";
+  ChatHeader,
+  SuggestedQuestions,
+  ChatMessages,
+  TypingIndicator,
+  ChatInput
+} from "@/components/chat";
 
 import {
   askMemora
@@ -10,19 +16,36 @@ import {
 
 export default function ChatPage() {
 
-  const [question, setQuestion] =
-    useState("");
-
-  const [answer, setAnswer] =
-    useState("");
+  const [messages, setMessages] =
+    useState([]);
 
   const [loading, setLoading] =
     useState(false);
 
-  const handleAsk =
-    async () => {
+  const sendQuestion =
+    async (question) => {
 
-      if (!question) return;
+      if (!question.trim()) {
+
+        return;
+
+      }
+
+      const userMessage = {
+
+        role: "user",
+
+        content: question
+
+      };
+
+      setMessages((prev) => [
+
+        ...prev,
+
+        userMessage
+
+      ]);
 
       try {
 
@@ -33,89 +56,94 @@ export default function ChatPage() {
             question
           );
 
-        setAnswer(
-          result.answer
-        );
+        setMessages((prev) => [
 
-      } catch (error) {
+          ...prev,
+
+          {
+
+            role: "assistant",
+
+            content: result.answer
+
+          }
+
+        ]);
+
+      }
+
+      catch (error) {
 
         console.error(error);
 
-      } finally {
+      }
+
+      finally {
 
         setLoading(false);
 
       }
+
     };
 
   return (
-    <div className="max-w-4xl mx-auto">
 
-      <h1 className="text-4xl font-bold mb-8">
-        Ask Memora
-      </h1>
+    <div
+      className="
+                max-w-5xl
+                mx-auto
+                space-y-6
+            "
+    >
 
-      <textarea
-        value={question}
-        onChange={(e) =>
-          setQuestion(
-            e.target.value
-          )
+      <ChatHeader />
+
+      {
+
+        messages.length === 0 && (
+
+          <SuggestedQuestions
+
+            onSelect={
+              sendQuestion
+            }
+
+          />
+
+        )
+
+      }
+
+      <ChatMessages
+
+        messages={
+          messages
         }
-        rows={4}
-        placeholder="Ask a question..."
-        className="
-          w-full
-          border
-          rounded-lg
-          p-4
-        "
+
       />
 
-      <button
-        onClick={handleAsk}
-        className="
-          bg-blue-600
-          text-white
-          px-5
-          py-2
-          rounded-lg
-          mt-4
-        "
-      >
-        {loading
-          ? "Thinking..."
-          : "Ask"}
-      </button>
+      <TypingIndicator
 
-      {answer && (
+        loading={
+          loading
+        }
 
-        <div
-          className="
-            mt-8
-            bg-white
-            p-6
-            rounded-xl
-            shadow
-          "
-        >
+      />
 
-          <h2
-            className="
-              font-bold
-              mb-4
-            "
-          >
-            Answer
-          </h2>
+      <ChatInput
 
-          <p>
-            {answer}
-          </p>
+        loading={
+          loading
+        }
 
-        </div>
-      )}
+        onSend={
+          sendQuestion
+        }
+
+      />
 
     </div>
+
   );
+
 }
