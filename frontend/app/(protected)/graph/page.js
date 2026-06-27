@@ -1,13 +1,14 @@
 "use client";
 
+import { useEffect, useMemo, useState } from "react";
+
 import {
-    useEffect,
-    useState
-} from "react";
-
-import ReactFlow from "reactflow";
-
-import "reactflow/dist/style.css";
+    GraphHeader,
+    GraphSearch,
+    GraphCanvas,
+    GraphSidebar,
+    EmptyGraph
+} from "@/components/graph";
 
 import {
     getGraph
@@ -17,11 +18,8 @@ import {
     getLayoutedElements
 } from "@/lib/graphLayout";
 
-import {
-    Controls,
-    MiniMap,
-    Background,
-} from "reactflow";
+import GraphStats from "@/components/graph/GraphStats";
+import GraphLegend from "@/components/graph/GraphLegend";
 
 export default function GraphPage() {
 
@@ -31,6 +29,12 @@ export default function GraphPage() {
     const [edges, setEdges] =
         useState([]);
 
+    const [selectedNode, setSelectedNode] =
+        useState(null);
+
+    const [search, setSearch] =
+        useState("");
+
     useEffect(() => {
 
         loadGraph();
@@ -39,83 +43,214 @@ export default function GraphPage() {
 
     const loadGraph = async () => {
 
-        const data = await getGraph();
+        try {
 
-        console.log(data);
+            const data =
+                await getGraph();
 
-        const flowNodes =
-            data.nodes.map(
-                (node, index) => ({
+            const flowNodes =
+                data.nodes.map((node) => ({
+
                     id: node.id,
 
                     position: {
-                        x:
-                            Math.random() * 800,
 
-                        y:
-                            Math.random() * 600
+                        x: Math.random() * 600,
+
+                        y: Math.random() * 500
+
                     },
+                    type: "custom",
 
                     data: {
-                        label: node.id
-                    }
-                })
-            );
 
-        const flowEdges =
-            data.edges.map(
-                (
-                    edge,
-                    index
-                ) => ({
+                        label: node.id
+
+                    }
+
+                }));
+
+            const flowEdges =
+                data.edges.map((edge, index) => ({
+
                     id: `e${index}`,
 
-                    source:
-                        edge.source,
+                    source: edge.source,
 
-                    target:
-                        edge.target
-                })
-            );
+                    target: edge.target,
 
-        const layouted =
-            getLayoutedElements(
-                flowNodes,
-                flowEdges
-            );
+                    animated: true,
 
-        setNodes(
-            layouted.nodes
-        );
+                    style: {
 
-        setEdges(
-            layouted.edges
-        );
+                        strokeWidth: 2
+
+                    }
+
+                }));
+
+            const layouted =
+                getLayoutedElements(
+
+                    flowNodes,
+
+                    flowEdges
+
+                );
+
+            setNodes(layouted.nodes);
+
+            setEdges(layouted.edges);
+
+        }
+
+        catch (error) {
+
+            console.error(error);
+
+        }
+
     };
 
+    const filteredNodes =
+        useMemo(() => {
+
+            if (!search.trim()) {
+
+                return nodes;
+
+            }
+
+            return nodes.filter((node) =>
+
+                node.data.label
+
+                    .toLowerCase()
+
+                    .includes(
+
+                        search.toLowerCase()
+
+                    )
+
+            );
+
+        }, [nodes, search]);
+
+    const filteredEdges = useMemo(() => {
+
+        if (!search.trim()) {
+
+            return edges;
+
+        }
+
+        const visibleIds = new Set(
+
+            filteredNodes.map(node => node.id)
+
+        );
+
+        return edges.filter(
+
+            edge =>
+
+                visibleIds.has(edge.source) &&
+
+                visibleIds.has(edge.target)
+
+        );
+
+    }, [edges, filteredNodes, search]);
+
+    if (!nodes.length) {
+
+        return (
+
+            <div className="space-y-8">
+
+                <GraphHeader />
+
+                <EmptyGraph />
+
+            </div>
+
+        );
+
+    }
+
     return (
-        <div
-            className="
-                w-full
-                h-[85vh]
-                bg-white
-                rounded-xl
-                shadow-lg
-            "
-        >
-            <ReactFlow
+
+        <div className="space-y-8">
+
+            <GraphHeader />
+
+            <GraphSearch
+
+                search={search}
+
+                setSearch={setSearch}
+
+            />
+            <GraphStats
+
                 nodes={nodes}
+
                 edges={edges}
-                fitView
+
+            />
+            <div
+                className="
+                    grid
+                    xl:grid-cols-4
+                    gap-6
+                "
             >
 
-                <MiniMap />
+                <div
+                    className="
+                        xl:col-span-3
+                    "
+                >
 
-                <Controls />
+                    <GraphCanvas
 
-                <Background />
+                        nodes={filteredNodes}
 
-            </ReactFlow>
+                        edges={filteredEdges}
+
+                        onNodeClick={(_, node) =>
+
+                            setSelectedNode(node)
+
+                        }
+
+                    />
+
+                </div>
+
+                <div
+                    className="
+        space-y-6
+    "
+                >
+
+                    <GraphSidebar
+
+                        selectedNode={selectedNode}
+
+                        edges={edges}
+
+                    />
+
+                    <GraphLegend />
+
+                </div>
+
+            </div>
+
         </div>
+
     );
+
 }
