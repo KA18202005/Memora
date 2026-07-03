@@ -16,6 +16,8 @@ import {
   getDocuments,
 } from "@/services/documentService";
 
+import { toast } from "sonner";
+
 export default function UploadPage() {
 
   const [file, setFile] =
@@ -64,7 +66,15 @@ export default function UploadPage() {
   const handleUpload =
     async () => {
 
-      if (!file) return;
+      if (!file) {
+
+        toast.warning(
+          "Please select a PDF first."
+        );
+
+        return;
+
+      }
 
       setLoading(true);
 
@@ -98,6 +108,10 @@ export default function UploadPage() {
         const data =
           await uploadDocument(file);
 
+        toast.success(
+          `${file.name} uploaded successfully!`
+        );
+
         clearInterval(interval);
 
         setProgress(100);
@@ -113,6 +127,10 @@ export default function UploadPage() {
       catch (error) {
 
         console.error(error);
+
+        toast.error(
+          "Failed to upload document."
+        );
 
       }
 

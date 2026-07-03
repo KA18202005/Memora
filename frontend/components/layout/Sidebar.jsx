@@ -13,8 +13,11 @@ import {
   Network,
   BrainCircuit,
   LogOut,
-  BookOpen
+  BookOpen,
+  Settings
 } from "lucide-react";
+
+import { toast } from "sonner";
 
 const menu = [
   {
@@ -51,6 +54,11 @@ const menu = [
     name: "Topics",
     href: "/topics",
     icon: BookOpen,
+  },
+  {
+    name: "Settings",
+    href: "/settings",
+    icon: Settings,
   }
 ];
 
@@ -64,6 +72,8 @@ export default function Sidebar() {
     localStorage.removeItem("token");
 
     sessionStorage.clear();
+
+    toast.success("Logged out successfully.");
 
     router.replace("/login");
 

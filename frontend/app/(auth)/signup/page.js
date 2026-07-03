@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 
+import { toast } from "sonner";
+
 import { signup } from "@/services/authService";
 
 import {
@@ -58,6 +60,8 @@ export default function SignupPage() {
 
             await signup(form);
 
+            toast.success("Account created successfully!");
+
             router.push("/login");
 
         }
@@ -72,6 +76,7 @@ export default function SignupPage() {
 
             );
 
+            toast.error("Unable to create account.");
         }
 
         finally {

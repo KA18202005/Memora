@@ -8,6 +8,8 @@ import { Eye, EyeOff, Loader2 } from "lucide-react";
 
 import { login as loginUser } from "@/services/authService";
 
+import { toast } from "sonner";
+
 import { useAuth } from "@/context/AuthContext";
 
 import {
@@ -63,6 +65,8 @@ export default function LoginPage() {
 
             await login(data.access_token);
 
+            toast.success("Welcome back!");
+
             router.push("/dashboard");
 
         }
@@ -71,9 +75,9 @@ export default function LoginPage() {
 
             console.error(err);
 
-            setError(
-                "Invalid email or password."
-            );
+            setError("Invalid email or password.");
+
+            toast.error("Invalid email or password.");
 
         }
 
