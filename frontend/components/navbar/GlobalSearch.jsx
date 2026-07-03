@@ -169,7 +169,7 @@ export default function GlobalSearch() {
 
                 relative
 
-                w-[430px]
+                w-107.5
 
             "
 

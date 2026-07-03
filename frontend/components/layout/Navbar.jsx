@@ -12,7 +12,9 @@ import { useAuth } from "@/context/AuthContext";
 
 import {
 
-    GlobalSearch
+    GlobalSearch,
+
+    NotificationBell
 
 } from "@/components/navbar";
 
@@ -63,46 +65,7 @@ export default function Navbar() {
 
                 {/* Notification */}
 
-                <button
-
-                    className="
-                        relative
-                        w-11
-                        h-11
-                        rounded-full
-                        bg-slate-100
-                        flex
-                        items-center
-                        justify-center
-                        hover:bg-violet-100
-                        transition
-                    "
-
-                >
-
-                    <Bell
-
-                        size={20}
-
-                        className="
-                            text-slate-600
-                        "
-
-                    />
-
-                    <span
-                        className="
-                            absolute
-                            top-2
-                            right-2
-                            w-2.5
-                            h-2.5
-                            rounded-full
-                            bg-red-500
-                        "
-                    />
-
-                </button>
+                <NotificationBell />
 
                 {/* User */}
 

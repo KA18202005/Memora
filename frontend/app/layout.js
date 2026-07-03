@@ -9,6 +9,8 @@ export const metadata = {
   description: "Personal Knowledge Memory System",
 };
 
+import { Toaster } from "sonner";
+
 export default function RootLayout({
   children,
 }) {
