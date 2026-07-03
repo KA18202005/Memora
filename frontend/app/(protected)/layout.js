@@ -11,7 +11,7 @@ export default function ProtectedLayout({
   return (
     <ProtectedRoute>
 
-      <div className="flex h-screen bg-slate-100">
+      <div className="flex h-screen bg-background text-foreground">
 
         <Sidebar />
 

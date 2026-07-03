@@ -23,8 +23,9 @@ export default function NotificationItem({
                 py-3
                 border-b
                 last:border-none
-                hover:bg-slate-50
-                transition
+                transition-colors
+        hover:bg-accent
+        hover:text-accent-foreground
             "
         >
 

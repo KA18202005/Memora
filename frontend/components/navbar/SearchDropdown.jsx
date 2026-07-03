@@ -26,7 +26,7 @@ export default function SearchDropdown({
                     top-full
                     mt-2
                     w-full
-                    bg-white
+                    bg-background
                     border
                     rounded-2xl
                     shadow-xl
@@ -52,7 +52,7 @@ export default function SearchDropdown({
                 top-full
                 mt-2
                 w-full
-                bg-white
+                bg-background
                 rounded-2xl
                 border
                 shadow-xl
@@ -73,7 +73,7 @@ export default function SearchDropdown({
                             py-2
                             text-xs
                             font-semibold
-                            bg-slate-50
+                            bg-background
                             text-slate-500
                         "
                     >
@@ -122,7 +122,7 @@ export default function SearchDropdown({
                             py-2
                             text-xs
                             font-semibold
-                            bg-slate-50
+                            bg-background
                             text-slate-500
                         "
                     >

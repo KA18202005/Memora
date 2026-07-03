@@ -9,6 +9,8 @@ export const metadata = {
   description: "Personal Knowledge Memory System",
 };
 
+import { ThemeProvider } from "@/components/theme";
+
 export default function RootLayout({
 
   children,
@@ -17,20 +19,24 @@ export default function RootLayout({
 
   return (
 
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
 
       <body>
 
         <AuthProvider>
 
-          {children}
+          <ThemeProvider>
 
-          <Toaster
-            richColors
-            position="top-right"
-            expand
-            duration={3000}
-          />
+            {children}
+
+            <Toaster
+              richColors
+              position="top-right"
+              expand
+              duration={3000}
+            />
+
+          </ThemeProvider>
 
         </AuthProvider>
 

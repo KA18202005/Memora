@@ -46,7 +46,7 @@ def get_dashboard_full(
             recommendation.get(
                 "retention_score",
                 100
-            ) < 70
+            ) < 50
         ):
 
             weak_topics.append({

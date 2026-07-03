@@ -32,7 +32,7 @@ export default function NotificationDropdown({
                 right-0
                 mt-3
                 w-96
-                bg-white
+                bg-background
                 rounded-2xl
                 shadow-2xl
                 border

@@ -82,9 +82,9 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="w-64 h-screen bg-slate-900 text-white flex flex-col">
+    <aside className="w-64 h-screen bg-card border-r border-border text-foreground flex flex-col transition-colors duration-300">
 
-      <div className="text-3xl font-bold p-6 border-b border-slate-700">
+      <div className="text-3xl font-bold p-6 border-b border-border">
         Memora
       </div>
 
@@ -100,8 +100,8 @@ export default function Sidebar() {
               href={item.href}
               className={`flex items-center gap-3 px-4 py-3 rounded-xl transition
               ${pathname === item.href
-                  ? "bg-blue-600 shadow-lg shadow-blue-500/30"
-                  : "hover:bg-slate-800 hover:translate-x-1 transition-all duration-300"
+                  ? "bg-primary text-primary-foreground shadow-md"
+                  : "hover:bg-accent hover:text-accent-foreground hover:translate-x-1 transition-all duration-300"
                 }`}
             >
               <Icon size={20} />
@@ -117,16 +117,17 @@ export default function Sidebar() {
         onClick={handleLogout}
 
         className="
-        m-4
-        flex
-        items-center
-        gap-3
-        px-4
-        py-3
-        rounded-xl
-        hover:bg-red-600
-        transition
-    "
+m-4
+flex
+items-center
+gap-3
+px-4
+py-3
+rounded-xl
+text-red-500
+hover:bg-red-500/10
+transition
+"
 
       >
         <LogOut size={20} />

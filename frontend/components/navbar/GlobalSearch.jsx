@@ -212,36 +212,22 @@ export default function GlobalSearch() {
                 placeholder="Search your knowledge..."
 
                 className="
-
-                    w-full
-
-                    bg-slate-50
-
-                    border
-
-                    border-slate-200
-
-                    rounded-2xl
-
-                    pl-11
-
-                    pr-10
-
-                    py-3
-
-                    outline-none
-
-                    transition-all
-
-                    duration-300
-
-                    focus:border-violet-500
-
-                    focus:ring-4
-
-                    focus:ring-violet-100
-
-                "
+        w-full
+        bg-background
+        border
+        border-border
+        text-foreground
+        placeholder:text-muted-foreground
+        rounded-2xl
+        pl-11
+        pr-4
+        py-3
+        outline-none
+        transition-all
+        duration-300
+        focus:ring-2
+        focus:ring-violet-500
+    "
 
             />
 
@@ -254,20 +240,12 @@ export default function GlobalSearch() {
                     size={18}
 
                     className="
-
-                        absolute
-
-                        right-4
-
-                        top-1/2
-
-                        -translate-y-1/2
-
-                        animate-spin
-
-                        text-violet-600
-
-                    "
+absolute
+left-4
+top-1/2
+-translate-y-1/2
+text-muted-foreground
+"
 
                 />
 

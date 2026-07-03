@@ -1,14 +1,8 @@
 "use client";
 
-import {
-
-    Bell,
-
-    Search
-
-} from "lucide-react";
-
 import { useAuth } from "@/context/AuthContext";
+
+import { ThemeToggle } from "@/components/theme";
 
 import {
 
@@ -36,9 +30,9 @@ export default function Navbar() {
         <header
             className="
                 h-20
-                bg-white
+                bg-background
                 border-b
-                border-slate-200
+                border-border
                 px-8
                 flex
                 items-center
@@ -63,6 +57,8 @@ export default function Navbar() {
                 "
             >
 
+                <ThemeToggle />
+
                 {/* Notification */}
 
                 <NotificationBell />
@@ -74,12 +70,12 @@ export default function Navbar() {
                         flex
                         items-center
                         gap-3
-                        bg-slate-50
+                        bg-card
                         rounded-2xl
                         px-4
                         py-2
                         border
-                        border-slate-200
+                        border-border
                     "
                 >
 
@@ -112,7 +108,7 @@ export default function Navbar() {
                         <p
                             className="
                                 text-xs
-                                text-slate-500
+                                text-muted-foreground
                             "
                         >
 
@@ -123,7 +119,7 @@ export default function Navbar() {
                         <p
                             className="
                                 font-semibold
-                                text-slate-800
+                                text-foreground
                             "
                         >
 

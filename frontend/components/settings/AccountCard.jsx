@@ -53,7 +53,7 @@ export default function AccountCard() {
 
         <div
             className="
-                bg-white
+                bg-background
                 rounded-2xl
                 border
                 shadow-sm

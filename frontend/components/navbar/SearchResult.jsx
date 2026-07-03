@@ -52,9 +52,10 @@ export default function SearchResult({
                     gap-3
                     px-4
                     py-3
-                    hover:bg-slate-100
+                    transition-colors
+        hover:bg-accent
+        hover:text-accent-foreground
                     cursor-pointer
-                    transition
                 "
             >
 

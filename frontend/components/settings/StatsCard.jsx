@@ -88,7 +88,7 @@ export default function StatsCard({
 
         <div
             className="
-                bg-white
+                bg-background
                 rounded-2xl
                 border
                 shadow-sm
@@ -134,7 +134,8 @@ export default function StatsCard({
                                     items-center
                                     gap-4
                                     rounded-xl
-                                    bg-slate-50
+                                    bg-background/50
+                                    border-border
                                     p-4
                                 "
 

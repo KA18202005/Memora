@@ -18,7 +18,7 @@ export default function ProfileCard({
 
         <div
             className="
-                bg-white
+                bg-background
                 rounded-2xl
                 border
                 shadow-sm
