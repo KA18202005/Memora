@@ -3,6 +3,7 @@ from app.api.auth import router as auth_router
 from app.api.documents import router as document_router
 from app.api.revision import router as revision_router
 from app.api.dashboard import router as dashboard_router
+from app.api.search import router as search_router
 
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -20,6 +21,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 app.include_router(
     auth_router,
     prefix="/auth",
@@ -42,4 +44,10 @@ app.include_router(
     dashboard_router,
     prefix="/dashboard",
     tags=["Dashboard"]
+)
+
+app.include_router(
+    search_router,
+    prefix="/search",
+    tags=["Search"]
 )

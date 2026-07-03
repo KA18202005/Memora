@@ -10,6 +10,12 @@ import {
 
 import { useAuth } from "@/context/AuthContext";
 
+import {
+
+    GlobalSearch
+
+} from "@/components/navbar";
+
 
 export default function Navbar() {
   const {
@@ -43,53 +49,7 @@ export default function Navbar() {
 
             {/* Search */}
 
-            <div
-                className="
-                    relative
-                    w-107.5
-                "
-            >
-
-                <Search
-
-                    size={18}
-
-                    className="
-                        absolute
-                        left-4
-                        top-1/2
-                        -translate-y-1/2
-                        text-slate-400
-                    "
-
-                />
-
-                <input
-
-                    type="text"
-
-                    placeholder="Search your knowledge..."
-
-                    className="
-                        w-full
-                        bg-slate-50
-                        border
-                        border-slate-200
-                        rounded-2xl
-                        pl-11
-                        pr-4
-                        py-3
-                        outline-none
-                        transition-all
-                        duration-300
-                        focus:border-violet-500
-                        focus:ring-4
-                        focus:ring-violet-100
-                    "
-
-                />
-
-            </div>
+            <GlobalSearch />
 
             {/* Right Side */}
 
