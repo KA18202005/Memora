@@ -23,7 +23,7 @@ export default function QuickActions({
             description: "Ask questions about this document.",
             icon: MessageSquare,
             href: `/chat?document=${documentId}`,
-            color: "text-blue-600 bg-blue-100"
+            color: "text-blue-600 bg-background"
         },
 
         {
@@ -31,7 +31,7 @@ export default function QuickActions({
             description: "Create revision questions instantly.",
             icon: Brain,
             href: "/revision",
-            color: "text-violet-600 bg-violet-100"
+            color: "text-violet-600 bg-background"
         },
 
         {
@@ -39,7 +39,7 @@ export default function QuickActions({
             description: "Explore document relationships.",
             icon: Network,
             href: `/graph?document=${documentId}`,
-            color: "text-green-600 bg-green-100"
+            color: "text-green-600 bg-background"
         }
 
     ];

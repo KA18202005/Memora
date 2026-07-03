@@ -56,7 +56,7 @@ export default function DocumentStats({
                             w-12
                             h-12
                             rounded-xl
-                            bg-blue-100
+                            bg-background
                             flex
                             items-center
                             justify-center
@@ -105,7 +105,7 @@ export default function DocumentStats({
                             w-12
                             h-12
                             rounded-xl
-                            bg-violet-100
+                            bg-background
                             flex
                             items-center
                             justify-center

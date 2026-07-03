@@ -13,7 +13,7 @@ export default function AuthLayout({
                 min-h-screen
                 bg-linear-to-br
                 from-slate-50
-                via-white
+                via-background
                 to-violet-50
                 flex
                 items-center

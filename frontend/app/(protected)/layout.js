@@ -23,7 +23,7 @@ export default function ProtectedLayout({
             className="
               flex-1
               overflow-y-auto
-              p-8
+              p-4 md:p-8
             "
           >
             {children}

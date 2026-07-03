@@ -11,6 +11,12 @@ export const metadata = {
 
 import { ThemeProvider } from "@/components/theme";
 
+import {
+
+  SidebarProvider
+
+} from "@/context/SidebarContext";
+
 export default function RootLayout({
 
   children,
@@ -27,14 +33,13 @@ export default function RootLayout({
 
           <ThemeProvider>
 
-            {children}
+            <SidebarProvider>
 
-            <Toaster
-              richColors
-              position="top-right"
-              expand
-              duration={3000}
-            />
+              {children}
+
+              <Toaster />
+
+            </SidebarProvider>
 
           </ThemeProvider>
 

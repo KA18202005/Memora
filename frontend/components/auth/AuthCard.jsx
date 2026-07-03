@@ -12,7 +12,7 @@ export default function AuthCard({
             className="
                 w-full
                 max-w-md
-                bg-white
+                bg-background
                 rounded-3xl
                 shadow-2xl
                 border

@@ -47,7 +47,8 @@ export default function RecentUploads({
                 border
                 rounded-xl
                 p-4
-                hover:bg-slate-50
+                hover:bg-accent
+                hover:text-accent-foreground
                 transition
               "
 

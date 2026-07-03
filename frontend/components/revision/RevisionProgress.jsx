@@ -15,11 +15,11 @@ export default function RevisionProgress({
 
         <div
             className="
-                bg-white
+                bg-background
                 rounded-2xl
                 p-6
                 shadow-sm
-                border
+                border-border
             "
         >
 
@@ -61,7 +61,9 @@ export default function RevisionProgress({
                     w-full
                     h-3
                     rounded-full
-                    bg-slate-200
+                    bg-background/50
+                    border
+                    border-border
                     overflow-hidden
                 "
             >

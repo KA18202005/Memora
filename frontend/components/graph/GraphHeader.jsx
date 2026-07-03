@@ -24,7 +24,7 @@ export default function GraphHeader() {
                     w-14
                     h-14
                     rounded-2xl
-                    bg-green-100
+                    bg-background
                     flex
                     items-center
                     justify-center

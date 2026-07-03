@@ -30,7 +30,7 @@ export default function TypingIndicator({
                     w-10
                     h-10
                     rounded-full
-                    bg-blue-100
+                    bg-background
                     flex
                     items-center
                     justify-center
@@ -46,7 +46,7 @@ export default function TypingIndicator({
 
             <div
                 className="
-                    bg-slate-100
+                    bg-background
                     rounded-2xl
                     px-5
                     py-3

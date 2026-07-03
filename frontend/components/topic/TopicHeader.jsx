@@ -20,7 +20,7 @@ export default function TopicHeader() {
                     w-14
                     h-14
                     rounded-2xl
-                    bg-violet-100
+                    bg-background
                     flex
                     items-center
                     justify-center

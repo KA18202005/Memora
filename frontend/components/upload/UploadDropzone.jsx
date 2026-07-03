@@ -74,11 +74,11 @@ export default function UploadDropzone({
 
                         ?
 
-                        "border-blue-500 bg-blue-50"
+                        "border-blue-500 bg-background"
 
                         :
 
-                        "border-slate-300 hover:border-blue-500 hover:bg-slate-50"
+                        "border-slate-300 hover:border-blue-500 hover:bg-accent hover:text-accent-foreground"
 
                 }
 

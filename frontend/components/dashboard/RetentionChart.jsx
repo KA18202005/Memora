@@ -34,7 +34,7 @@ function CustomTooltip({
 
         <div
             className="
-bg-white
+bg-background
 border
 rounded-xl
 shadow-lg

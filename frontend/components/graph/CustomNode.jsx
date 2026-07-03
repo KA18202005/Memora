@@ -19,7 +19,7 @@ export default function CustomNode({ data }) {
                     py-3
                     rounded-xl
                     border
-                    bg-white
+                    bg-background
                     shadow-md
                     hover:shadow-xl
                     transition-all

@@ -34,7 +34,7 @@ gap-4
 
                 <div
                     className="
-bg-slate-100
+bg-background
 rounded-xl
 p-5
 text-center
@@ -57,7 +57,7 @@ text-center
 
                 <div
                     className="
-bg-slate-100
+bg-background
 rounded-xl
 p-5
 text-center

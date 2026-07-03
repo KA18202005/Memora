@@ -46,7 +46,7 @@ export default function EvaluationCard({
 
                 <div
                     className="
-            bg-violet-100
+            bg-background
             text-violet-700
             px-4
             py-2

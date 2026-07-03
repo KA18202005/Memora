@@ -73,7 +73,8 @@ export default function SuggestedQuestions({
                                 py-2
                                 rounded-full
                                 border
-                                hover:bg-blue-50
+                                hover:bg-accent
+                                hover:text-accent-foreground
                                 hover:border-blue-500
                                 transition-all
                             "

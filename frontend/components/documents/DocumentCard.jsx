@@ -39,7 +39,7 @@ export default function DocumentCard({
                             w-14
                             h-14
                             rounded-xl
-                            bg-blue-100
+                            bg-background
                             flex
                             items-center
                             justify-center

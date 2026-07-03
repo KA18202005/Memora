@@ -12,18 +12,38 @@ import {
 
 } from "@/components/navbar";
 
+import {
+
+    Menu
+
+} from "lucide-react";
+
+import {
+
+    useSidebar
+
+} from "@/context/SidebarContext";
+
 
 export default function Navbar() {
-  const {
-  
-      user
-  
-  } = useAuth();
-  
-  const initial =
-      user?.name
-          ?.charAt(0)
-          ?.toUpperCase() || "?";
+    const {
+
+        user
+
+    } = useAuth();
+
+    const {
+
+        open,
+
+        setOpen
+
+    } = useSidebar();
+
+    const initial =
+        user?.name
+            ?.charAt(0)
+            ?.toUpperCase() || "?";
 
     return (
 
@@ -42,6 +62,29 @@ export default function Navbar() {
                 z-50
             "
         >
+
+            <button
+
+                className="
+lg:hidden
+mr-4
+"
+
+                onClick={() =>
+
+                    setOpen(
+
+                        !open
+
+                    )
+
+                }
+
+            >
+
+                <Menu />
+
+            </button>
 
             {/* Search */}
 

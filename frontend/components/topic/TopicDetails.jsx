@@ -148,7 +148,7 @@ export default function TopicDetails({
                             px-3
                             py-1
                             rounded-full
-                            bg-violet-100
+                            bg-background
                             text-violet-700
                             font-semibold
                         "

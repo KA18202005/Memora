@@ -35,7 +35,7 @@ export default function RecommendationCard({
 px-4
 py-1
 rounded-full
-bg-red-100
+bg-background
 text-red-600
 font-semibold
 "

@@ -32,7 +32,7 @@ export default function GraphCanvas({
                 rounded-2xl
                 overflow-hidden
                 border
-                bg-white
+                bg-background
             "
         >
 

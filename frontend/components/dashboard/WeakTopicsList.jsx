@@ -162,7 +162,7 @@ export default function WeakTopicsList({
                                                 <div
                                                     className="
                                                         h-2
-                                                        bg-slate-200
+                                                        bg-background
                                                         rounded-full
                                                     "
                                                 >

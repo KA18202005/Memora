@@ -23,7 +23,7 @@ export default function DocumentHeader({
                     w-16
                     h-16
                     rounded-2xl
-                    bg-blue-100
+                    bg-background
                     flex
                     items-center
                     justify-center

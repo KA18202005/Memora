@@ -129,7 +129,7 @@ export default function ChatMessages({
                                         w-10
                                         h-10
                                         rounded-full
-                                        bg-blue-100
+                                        bg-background
                                         flex
                                         items-center
                                         justify-center
@@ -166,7 +166,7 @@ export default function ChatMessages({
 
                                         :
 
-                                        "bg-slate-100"
+                                        "bg-background text-slate-700"
 
                                 }
 
@@ -196,7 +196,7 @@ export default function ChatMessages({
                                         w-10
                                         h-10
                                         rounded-full
-                                        bg-slate-200
+                                        bg-background
                                         flex
                                         items-center
                                         justify-center

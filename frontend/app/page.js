@@ -85,7 +85,7 @@ export default function Home() {
                     justify-center
                     bg-linear-to-br
                     from-violet-50
-                    via-white
+                    via-background
                     to-blue-50
                     text-center
                     px-6
@@ -97,7 +97,7 @@ export default function Home() {
                         w-24
                         h-24
                         rounded-3xl
-                        bg-violet-100
+                        bg-background
                         flex
                         items-center
                         justify-center
@@ -199,7 +199,8 @@ export default function Home() {
                                 px-8
                                 py-4
                                 rounded-2xl
-                                hover:bg-slate-100
+                                hover:bg-accent
+                                hover:text-accent-foreground
                                 transition
                             "
                         >
@@ -327,7 +328,7 @@ export default function Home() {
 
             <section
                 className="
-                    bg-slate-50
+                    bg-background
                     py-28
                 "
             >
@@ -383,7 +384,7 @@ export default function Home() {
 
                                     className="
                                         rounded-2xl
-                                        bg-white
+                                        bg-background
                                         p-6
                                         shadow
                                     "

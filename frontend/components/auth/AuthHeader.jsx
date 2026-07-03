@@ -24,7 +24,7 @@ export default function AuthHeader({
                     w-16
                     h-16
                     rounded-2xl
-                    bg-violet-100
+                    bg-background
                     flex
                     items-center
                     justify-center
