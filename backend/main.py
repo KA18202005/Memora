@@ -22,6 +22,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/")
+def root():
+
+    return {
+        "message": "Welcome to Memora API 🚀",
+        "docs": "/docs",
+        "status": "running"
+    }
+
 app.include_router(
     auth_router,
     prefix="/auth",
