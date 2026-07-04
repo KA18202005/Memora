@@ -21,6 +21,8 @@ import { toast } from "sonner";
 
 import { useSidebar } from "@/context/SidebarContext";
 
+import { useAuth } from "@/context/AuthContext";
+
 const menu = [
   {
     name: "Dashboard",
@@ -69,16 +71,19 @@ export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const { open, setOpen } = useSidebar();
+  const { logout } = useAuth();
 
   const handleLogout = () => {
 
     setOpen(false);
 
-    LogOut();
+    logout();
 
     toast.success("Logged out successfully.");
 
     router.replace("/login");
+
+    router.refresh();
 
   };
 
