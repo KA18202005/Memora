@@ -93,7 +93,7 @@ export default function DashboardPage() {
           className="
             grid
             grid-cols-1
-            md:grid-cols-2
+            sm:grid-cols-2
             xl:grid-cols-5
             gap-6
           "

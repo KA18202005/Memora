@@ -180,8 +180,11 @@ export default function UploadPage() {
             border
             p-4
             flex
-            justify-between
-            items-center
+flex-col
+md:flex-row
+gap-4
+md:items-center
+md:justify-between
           "
         >
 

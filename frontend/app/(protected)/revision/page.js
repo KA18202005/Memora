@@ -70,8 +70,6 @@ export default function RevisionPage() {
 
             const data = await getTopics();
 
-            console.log("Topics from API:", data);
-
             setTopics(data);
 
         }
@@ -151,7 +149,6 @@ export default function RevisionPage() {
 
                 const result =
                     await evaluateRevision(payload);
-                console.log("Evaluation Response:", result);
 
                 setEvaluation(result);
 
@@ -377,8 +374,9 @@ export default function RevisionPage() {
             <div
                 className="
                     grid
-                    md:grid-cols-2
-                    gap-6
+grid-cols-1
+lg:grid-cols-2
+gap-6
                 "
             >
 

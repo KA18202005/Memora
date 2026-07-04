@@ -108,8 +108,10 @@ export default function SettingsPage() {
     return (
 
         <div
-            className="
-                max-w-6xl
+            className="grid
+grid-cols-1
+lg:grid-cols-2
+gap-6
                 mx-auto
                 space-y-8
             "

@@ -52,7 +52,6 @@ export default function TopicPage() {
                     params.topic
                 );
 
-            console.log(result);
 
             setTopicData(result);
 

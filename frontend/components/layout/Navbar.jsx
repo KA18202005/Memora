@@ -88,7 +88,9 @@ mr-4
 
             {/* Search */}
 
-            <GlobalSearch />
+            <div className="hidden md:block flex-1 max-w-xl">
+                <GlobalSearch />
+            </div>
 
             {/* Right Side */}
 
