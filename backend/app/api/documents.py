@@ -19,6 +19,10 @@ from app.schemas.question_schema import QuestionRequest
 router = APIRouter()
 UPLOAD_DIR = "uploads"
 
+os.makedirs(
+    UPLOAD_DIR,
+    exist_ok=True
+)
 
 # ==========================
 # Upload Document
