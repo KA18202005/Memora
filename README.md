@@ -275,35 +275,23 @@ NEXT_PUBLIC_API_URL=
 
 ---
 
-# 📸 Screenshots
+## 📸 Application Preview
 
-## Dashboard
+| Dashboard | Upload |
+|-----------|---------|
+| ![](./screenshots/dashboard.png) | ![](./screenshots/upload.png) |
 
-> Add screenshot here
+| Documents | Chat |
+|-----------|------|
+| ![](./screenshots/document.png) | ![](./screenshots/chat.png) |
 
----
+| Graph | Revision |
+|-------|----------|
+| ![](./screenshots/graph.png) | ![](./screenshots/revision.png) |
 
-## Upload
-
-> Add screenshot here
-
----
-
-## Chat
-
-> Add screenshot here
-
----
-
-## Knowledge Graph
-
-> Add screenshot here
-
----
-
-## Dark Mode
-
-> Add screenshot here
+| Topics | Dark Mode |
+|--------|-----------|
+| ![](./screenshots/topics.png) | ![](./screenshots/dark-mode.png) |
 
 ---
 
